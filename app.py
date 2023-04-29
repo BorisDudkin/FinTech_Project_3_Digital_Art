@@ -21,6 +21,10 @@ def load_lottieurl(url: str):
 lottie_url = 'https://assets7.lottiefiles.com/packages/lf20_1iCXQLskUr.json'
 lottie_json = load_lottieurl(lottie_url)
 
+lottie_url_auction = 'https://assets3.lottiefiles.com/private_files/lf30_9cbxvjqt.json'
+
+lottie_json_auction = load_lottieurl(lottie_url_auction)
+
 with st.sidebar:
     st_lottie(lottie_json, height=180)
     selected = option_menu(
@@ -56,3 +60,27 @@ if selected == '🔨 Minting and Registration':
 if selected == '💰 Auction':
     st.title('💰 Auction Your Artwork')
     st.write("---")
+
+    auction=st.button("Start an auction?")
+    if auction:
+        # time_min = 0.2
+        time_sec = 20
+        
+        col1, col2 = st.columns(2, gap='large')
+
+        with st_lottie_spinner(lottie_json_auction, height=100):
+            count_header=st.empty()
+            time_header=st.empty()
+            # with st.empty():
+                
+            while time_sec:
+                time_sec-=1
+                mins, secs = divmod(time_sec, 60)
+                time_now = '{:02d}:{:02d}'.format(mins, secs)
+                count_header.subheader('Count-down')
+                time_header.subheader(time_now)
+                time.sleep(1)
+                # time_sec-=1
+            st.write("Auction ended!")
+            # time.sleep(5)
+            
