@@ -62,25 +62,53 @@ if selected == '💰 Auction':
     st.write("---")
 
     auction=st.button("Start an auction?")
-    if auction:
+    if "load_state" not in st.session_state:
+            st.session_state.load_state = True
+    if auction or st.session_state.load_state:
         # time_min = 0.2
-        time_sec = 20
+        time_sec = 30
         
-        col1, col2 = st.columns(2, gap='large')
-
+        col1, col2, col3 = st.columns([1,3,2], gap='large')
+        # my_form = st.form(key="Characteristics)")
         with st_lottie_spinner(lottie_json_auction, height=100):
-            count_header=st.empty()
-            time_header=st.empty()
-            # with st.empty():
-                
+            
+            with col2:
+                st.subheader('The Lake')
+                st.image("https://www.andrisapse.com/prints/2281.jpg")
+                st.write('by Boris')
+                st.write("Initial Value")
+                st.write("Last Bid")
+
+            with col1:
+                count_header=st.empty()
+                time_header=st.empty()
+                # st.write('by Boris')
+                # st.write("Initial Value")
+                # st.write("Last Bid")
+
+            with col3:
+                st.write('#')
+                st.write('#')
+                my_form = st.form(key="Characteristics)")
+                my_form.subheader('Bid')
+                my_form.text_input("The address")
+                my_form.number_input("Bid (in ETH)")
+                my_form.form_submit_button('Place order')
+
             while time_sec:
+                
                 time_sec-=1
                 mins, secs = divmod(time_sec, 60)
                 time_now = '{:02d}:{:02d}'.format(mins, secs)
-                count_header.subheader('Count-down')
+                count_header.markdown('#### Count-down')
                 time_header.subheader(time_now)
+                # my_form.subheader('The Lake')
+                # my_form.image("https://www.andrisapse.com/prints/2281.jpg")
+                # my_form.text_input("The address", key = time_sec)
+                # my_form.form_submit_button('Submit your selections for price prediction')
                 time.sleep(1)
                 # time_sec-=1
-            st.write("Auction ended!")
+            st.session_state.load_state = False
+    st.write("Auction ended!")
             # time.sleep(5)
             
