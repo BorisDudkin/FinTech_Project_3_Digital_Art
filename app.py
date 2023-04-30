@@ -26,7 +26,7 @@ lottie_url_auction = 'https://assets3.lottiefiles.com/private_files/lf30_9cbxvjq
 lottie_json_auction = load_lottieurl(lottie_url_auction)
 
 with st.sidebar:
-    st_lottie(lottie_json, height=180)
+    st_lottie(lottie_json, height=180, key="lottie_sidebar")
     selected = option_menu(
         menu_title = 'Main Menu',
         options = ['🏠 Home','🔨 Minting and Registration','💰 Auction'],
@@ -61,54 +61,60 @@ if selected == '💰 Auction':
     st.title('💰 Auction Your Artwork')
     st.write("---")
 
-    auction=st.button("Start an auction?")
+    artwork_name= 'The Lake'
+    author = "Boris"
+    init_value = 1.5
+    last_bid = 1.6
+    auction=st.button("Start new auction?")
     if "load_state" not in st.session_state:
-            st.session_state.load_state = True
+            st.session_state.load_state = False
     if auction or st.session_state.load_state:
+        st.session_state.load_state = True
         # time_min = 0.2
-        time_sec = 30
+        time_sec = 10
         
         col1, col2, col3 = st.columns([1,3,2], gap='large')
         # my_form = st.form(key="Characteristics)")
-        with st_lottie_spinner(lottie_json_auction, height=100):
+        # with st_lottie_spinner(lottie_json_auction, height=100):
             
-            with col2:
-                st.subheader('The Lake')
-                st.image("https://www.andrisapse.com/prints/2281.jpg")
-                st.write('by Boris')
-                st.write("Initial Value")
-                st.write("Last Bid")
+        with col2:
+            st.subheader(f'{artwork_name}')
+            st.image("https://www.andrisapse.com/prints/2281.jpg")
+            st.write(f'by {author}')
+            st.write(f"Initial Value: **:blue[{init_value}]** ETH")
+            st.write(f"Last Bid: **:blue[{last_bid}]** ETH", key = 'last_bid')
 
-            with col1:
-                count_header=st.empty()
-                time_header=st.empty()
-                # st.write('by Boris')
-                # st.write("Initial Value")
-                # st.write("Last Bid")
+        with col1:
+            placeholder = st.empty()
+                # count_header=st.empty()
+                # time_header=st.empty()
 
-            with col3:
-                st.write('#')
-                st.write('#')
-                my_form = st.form(key="Characteristics)")
-                my_form.subheader('Bid')
-                my_form.text_input("The address")
-                my_form.number_input("Bid (in ETH)")
-                my_form.form_submit_button('Place order')
+        with col3:
+            st.write('#')
+            st.write('#')
+            my_form = st.form(key="bidder")
+            my_form.subheader('Bid')
+            my_form.text_input("Bidder's address")
+            my_form.number_input("Bid (in ETH)")
+            my_form.form_submit_button('Place order')
 
-            while time_sec:
+        while time_sec:
                 
-                time_sec-=1
-                mins, secs = divmod(time_sec, 60)
-                time_now = '{:02d}:{:02d}'.format(mins, secs)
-                count_header.markdown('#### Count-down')
-                time_header.subheader(time_now)
+            time_sec-=1
+            mins, secs = divmod(time_sec, 60)
+            time_now = '{:02d}:{:02d}'.format(mins, secs)
+            with placeholder.container():
+                st.markdown('#### Count-down')
+                st.subheader(f'**:green[{time_now}]**')
+                st_lottie(lottie_json_auction, height=180, key = time_now)
                 # my_form.subheader('The Lake')
                 # my_form.image("https://www.andrisapse.com/prints/2281.jpg")
                 # my_form.text_input("The address", key = time_sec)
                 # my_form.form_submit_button('Submit your selections for price prediction')
-                time.sleep(1)
+            time.sleep(1)
                 # time_sec-=1
-            st.session_state.load_state = False
-    st.write("Auction ended!")
+        placeholder.empty()
+    st.markdown("#### **:red[Auction ended!]**")
+    st.balloons()
             # time.sleep(5)
             
