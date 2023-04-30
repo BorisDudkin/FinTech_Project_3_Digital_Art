@@ -63,6 +63,11 @@ if selected == '🔨 Minting and Registration':
     if 'auction_list' not in st.session_state:
         st.session_state['auction_list']=art_list
 
+    auction=st.button("Start new auction?")
+    if auction:
+        if "load_state" not in st.session_state:
+            st.session_state.load_state = True
+
 if selected == '💰 Auction':
     st.title('💰 Auction Your Artwork')
     st.write("---")
@@ -73,12 +78,14 @@ if selected == '💰 Auction':
     # last_bid = 1.6
     art_list=st.session_state['auction_list']
 
-    auction=st.button("Start new auction?")
-    if "load_state" not in st.session_state:
-            st.session_state.load_state = False
-    if auction or st.session_state.load_state:
-        st.session_state.load_state = True
-        for art in art_list:
+    # auction=st.button("Start new auction?")
+    # if "load_state" not in st.session_state:
+    #         st.session_state.load_state = False
+    auction = st.session_state.load_state
+    if auction:
+        while len(art_list)>0:
+        # for art in art_list:
+            art = art_list.pop(0)
             count_art +=1
 
             time_sec = 10
