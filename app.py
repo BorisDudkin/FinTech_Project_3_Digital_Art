@@ -57,70 +57,81 @@ if selected == '🏠 Home':
 if selected == '🔨 Minting and Registration':
     st.title('🔨 Mint and Register Your Artwork')
     st.write("---")
+
+    art_list=[{'artwork_name': 'The Lake', 'author': "Boris",'init': 1.5, 'last_bid': 0, 'image': "https://www.andrisapse.com/prints/2281.jpg"},
+        {'artwork_name': 'Sunshine', 'author': "Boris",'init': 1.1, 'last_bid': 0, 'image': "https://docs.gimp.org/en/images/tutorials/quickie-jpeg-100.jpg"}]
+    if 'auction_list' not in st.session_state:
+        st.session_state['auction_list']=art_list
+
 if selected == '💰 Auction':
     st.title('💰 Auction Your Artwork')
     st.write("---")
+    count_art = 0
+    # artwork_name= 'The Lake'
+    # author = "Boris"
+    # init_value = 1.5
+    # last_bid = 1.6
+    art_list=st.session_state['auction_list']
 
-    artwork_name= 'The Lake'
-    author = "Boris"
-    init_value = 1.5
-    last_bid = 1.6
     auction=st.button("Start new auction?")
     if "load_state" not in st.session_state:
             st.session_state.load_state = False
     if auction or st.session_state.load_state:
         st.session_state.load_state = True
-        # time_min = 0.2
-        time_sec = 10
-        
-        col1, col2, col3 = st.columns([1,3,2], gap='large')
-        # my_form = st.form(key="Characteristics)")
-        # with st_lottie_spinner(lottie_json_auction, height=100):
+        for art in art_list:
+            count_art +=1
+
+            time_sec = 10
             
-        with col2:
-            placeholder_2= st.empty()
-            with placeholder_2.container():
-                st.subheader(f'{artwork_name}')
-                st.image("https://www.andrisapse.com/prints/2281.jpg")
-                st.write(f'by {author}')
-                st.write(f"Initial Value: **:blue[{init_value}]** ETH")
-                st.write(f"Last Bid: **:blue[{last_bid}]** ETH", key = 'last_bid')
-
-        with col1:
-            placeholder_1= st.empty()
-                # count_header=st.empty()
-                # time_header=st.empty()
-
-        with col3:
-            placeholder_3= st.empty()
-            with placeholder_3.container():
-                st.write('#')
-                st.write('#')
-                my_form = st.form(key="bidder")
-                my_form.subheader('Bid')
-                my_form.text_input("Bidder's address")
-                my_form.number_input("Bid (in ETH)")
-                my_form.form_submit_button('Place order')
-
-        while time_sec:
+            col1, col2, col3 = st.columns([1,3,2], gap='large')
+            # my_form = st.form(key="Characteristics)")
+            # with st_lottie_spinner(lottie_json_auction, height=100):
                 
-            time_sec-=1
-            mins, secs = divmod(time_sec, 60)
-            time_now = '{:02d}:{:02d}'.format(mins, secs)
-            with placeholder_1.container():
-                st.markdown('#### Count-down')
-                st.subheader(f'**:green[{time_now}]**')
-                st_lottie(lottie_json_auction, height=180, key = time_now)
-                # my_form.subheader('The Lake')
-                # my_form.image("https://www.andrisapse.com/prints/2281.jpg")
-                # my_form.text_input("The address", key = time_sec)
-                # my_form.form_submit_button('Submit your selections for price prediction')
-            time.sleep(1)
-                # time_sec-=1
-        placeholder_1.empty()
-        placeholder_2.empty()
-        placeholder_3.empty()
-    st.markdown("#### **:red[Auction ended!]**")
-    st.balloons()
+            with col2:
+                placeholder_2= st.empty()
+                with placeholder_2.container():
+                    st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
+                    st.image(art['image'])
+                    st.write(f"by: {art['author']}", key = 'author'+ str(count_art))
+                    st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
+                    st.write(f"Last Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
+                    # st.write(f"My name {art['init']}", key = "Initial_value"+ str(count_art))
+
+            with col1:
+                placeholder_1= st.empty()
+                    # count_header=st.empty()
+                    # time_header=st.empty()
+
+            with col3:
+                placeholder_3= st.empty()
+                with placeholder_3.container():
+                    st.write('#')
+                    st.write('#')
+                    my_form = st.form(key="bidder"+ str(count_art))
+                    my_form.subheader('Bid')
+                    my_form.text_input("Bidder's address")
+                    my_form.number_input("Bid (in ETH)")
+                    my_form.form_submit_button('Place order')
+
+            while time_sec:
+                    
+                time_sec-=1
+                mins, secs = divmod(time_sec, 60)
+                time_now = '{:02d}:{:02d}'.format(mins, secs)
+                with placeholder_1.container():
+                    st.markdown('#### Count-down')
+                    st.subheader(f'**:green[{time_now}]**')
+                    st_lottie(lottie_json_auction, height=180, key = str(time_sec)+str(count_art))
+                    # my_form.subheader('The Lake')
+                    # my_form.image("https://www.andrisapse.com/prints/2281.jpg")
+                    # my_form.text_input("The address", key = time_sec)
+                    # my_form.form_submit_button('Submit your selections for price prediction')
+                time.sleep(1)
+                    # time_sec-=1
+            placeholder_1.empty()
+            placeholder_2.empty()
+            placeholder_3.empty()
+        st.markdown("#### **:red[Auction ended!]**")
+        st.balloons()
             # time.sleep(5)
             
