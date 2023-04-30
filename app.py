@@ -78,32 +78,36 @@ if selected == '💰 Auction':
         # with st_lottie_spinner(lottie_json_auction, height=100):
             
         with col2:
-            st.subheader(f'{artwork_name}')
-            st.image("https://www.andrisapse.com/prints/2281.jpg")
-            st.write(f'by {author}')
-            st.write(f"Initial Value: **:blue[{init_value}]** ETH")
-            st.write(f"Last Bid: **:blue[{last_bid}]** ETH", key = 'last_bid')
+            placeholder_2= st.empty()
+            with placeholder_2.container():
+                st.subheader(f'{artwork_name}')
+                st.image("https://www.andrisapse.com/prints/2281.jpg")
+                st.write(f'by {author}')
+                st.write(f"Initial Value: **:blue[{init_value}]** ETH")
+                st.write(f"Last Bid: **:blue[{last_bid}]** ETH", key = 'last_bid')
 
         with col1:
-            placeholder = st.empty()
+            placeholder_1= st.empty()
                 # count_header=st.empty()
                 # time_header=st.empty()
 
         with col3:
-            st.write('#')
-            st.write('#')
-            my_form = st.form(key="bidder")
-            my_form.subheader('Bid')
-            my_form.text_input("Bidder's address")
-            my_form.number_input("Bid (in ETH)")
-            my_form.form_submit_button('Place order')
+            placeholder_3= st.empty()
+            with placeholder_3.container():
+                st.write('#')
+                st.write('#')
+                my_form = st.form(key="bidder")
+                my_form.subheader('Bid')
+                my_form.text_input("Bidder's address")
+                my_form.number_input("Bid (in ETH)")
+                my_form.form_submit_button('Place order')
 
         while time_sec:
                 
             time_sec-=1
             mins, secs = divmod(time_sec, 60)
             time_now = '{:02d}:{:02d}'.format(mins, secs)
-            with placeholder.container():
+            with placeholder_1.container():
                 st.markdown('#### Count-down')
                 st.subheader(f'**:green[{time_now}]**')
                 st_lottie(lottie_json_auction, height=180, key = time_now)
@@ -113,7 +117,9 @@ if selected == '💰 Auction':
                 # my_form.form_submit_button('Submit your selections for price prediction')
             time.sleep(1)
                 # time_sec-=1
-        placeholder.empty()
+        placeholder_1.empty()
+        placeholder_2.empty()
+        placeholder_3.empty()
     st.markdown("#### **:red[Auction ended!]**")
     st.balloons()
             # time.sleep(5)
