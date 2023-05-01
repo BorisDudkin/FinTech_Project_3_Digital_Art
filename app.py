@@ -26,7 +26,7 @@ lottie_url_auction = 'https://assets3.lottiefiles.com/private_files/lf30_9cbxvjq
 lottie_json_auction = load_lottieurl(lottie_url_auction)
 
 with st.sidebar:
-    st_lottie(lottie_json, height=180, key="lottie_sidebar")
+    st_lottie(lottie_json, height=270, key="lottie_sidebar")
     selected = option_menu(
         menu_title = 'Main Menu',
         options = ['🏠 Home','🔨 Minting and Registration','💰 Auction'],
@@ -76,8 +76,13 @@ if selected == '💰 Auction':
     # author = "Boris"
     # init_value = 1.5
     # last_bid = 1.6
-    art_list=st.session_state['auction_list']
+    if 'auction_list' not in st.session_state:
+        st.info("### :magenda[There are no items to auction at the momement!]")
+    else:
+        art_list=st.session_state['auction_list']
 
+    if "load_state" not in st.session_state:
+            st.session_state.load_state = False
     # auction=st.button("Start new auction?")
     # if "load_state" not in st.session_state:
     #         st.session_state.load_state = False
