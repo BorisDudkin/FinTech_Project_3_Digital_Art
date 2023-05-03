@@ -6,47 +6,25 @@ import streamlit as st
 from streamlit_lottie import st_lottie, st_lottie_spinner
 from streamlit_option_menu import option_menu
 
-## Niels added:
+st.set_page_config(page_title="Digital Solutions", layout='wide')
+
+#########
+# NIELS
+########
 import os
 import json
 from web3 import Web3
 from pathlib import Path
 from dotenv import load_dotenv
-
-
-st.set_page_config(page_title="Digital Solutions", layout='wide')
-
-# Define and connect a new Web3 provider
-w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
+import streamlit as st
 
 from pinata import pin_file_to_ipfs, pin_json_to_ipfs, convert_data_to_json
 
 load_dotenv()
 
-##### Load contract and connect to cotnract using contract address and ABI of contract
-@st.cache_resource()
-def load_contract():
-
-    # Load the contract ABI To be updated
-    with open(Path('./contracts/compiled/NFT_registry2_abi.json')) as f:
-        contract_abi = json.load(f)
-
-    # Set the contract address (this is the address of the deployed contract)
-    contract_address = os.getenv("SMART_CONTRACT_ADDRESS")
-
-    # Get the contract
-    contract = w3.eth.contract(
-        address=contract_address,
-        abi=contract_abi
-    )
-
-    return contract
-
-    # load_contract
-contract = load_contract()
-#####
-
-
+# Define and connect a new Web3 provider
+w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
+####
 
 # st.title('Digital Art Solutions')
 # st.write("---")
@@ -94,11 +72,37 @@ if selected == '🏠 Home':
     with st.expander("Fees and Charges"):
         st.write("Assets in our funds range from High Growth and Crypto to Value Stocks and Fixed Income securities of long-term and short-term maturities. Each fund is constructed with the risk profile of an investor in mind. Our funds are non-diversified and may experience greater volatility than more diversified investments. To compensate for the limited diversification, we only offer Large Cap US equities and Domestic stocks and bonds to reduce volatility brought by small- and medium-cap equities, excluding foreign currency exposure. And yet, there will always be risks involved with ETFs' investments, resulting in the possible loss of money.")
 
+#######
+# NIELS
+#######
 if selected == '🔨 Minting and Registration':
     st.title('🔨 Mint and Register Your Artwork')
     st.write("---")
 
-# pin files to pinata
+    ## Loads the contract once using cache
+    @st.cache_resource()
+    def load_contract():
+
+        # Load the contract ABI
+        with open(Path('./contracts/compiled/NFT_registry_abi.json')) as f:
+            contract_abi = json.load(f)
+
+        # Set the contract address (this is the address of the deployed contract)
+        contract_address = os.getenv("SMART_CONTRACT_ADDRESS")
+
+        # Get the contract
+        contract = w3.eth.contract(
+            address=contract_address,
+            abi=contract_abi
+        )
+
+        return contract
+
+    # Load the contract
+    contract = load_contract()
+
+# Helper functions to pin files and json to Pinata
+
     def pin_artwork(artwork_name, artwork_file):
         # Pin the file to IPFS with Pinata
         ipfs_file_hash = pin_file_to_ipfs(artwork_file.getvalue())
@@ -114,45 +118,71 @@ if selected == '🔨 Minting and Registration':
         json_ipfs_hash = pin_json_to_ipfs(json_data)
 
         return json_ipfs_hash
-    
-    ## Register new artwork by uploading
-    st.title("Register your NFT and mint the NFT Token")
-    st.write("Select Owners Account")
+
+    def pin_image(artwork_file):
+        # Pin the file to IPFS with Pinata
+        ipfs_file_hash = pin_file_to_ipfs(artwork_file.getvalue())
+        
+        # Build a token metadata file for the artwork
+        token_json_2 = ipfs_file_hash
+
+        json_data_image = convert_data_to_json(token_json_2)
+
+        # Pin the json to IPFS with Pinata
+        json_ipfs_hash_image = pin_json_to_ipfs(json_data_image)
+
+        # return hash of picture on pinata
+        return token_json_2 
+
+### To be removed in next version
+    def pin_appraisal_report(report_content):
+        json_report = convert_data_to_json(report_content)
+        report_ipfs_hash = pin_json_to_ipfs(json_report)
+        return report_ipfs_hash
+
+    st.title("Art Registry Appraisal System")
+    st.write("Choose an account to get started")
     accounts = w3.eth.accounts
     address = st.selectbox("Select Account", options=accounts)
     st.markdown("---")
 
-# Register New Artwork
-
-    st.markdown("## Register New NFT")
-    artwork_name = st.text_input("Enter NFT Name")
+    # Register New Artwork
+    st.markdown("## Register New Artwork")
+    artwork_name = st.text_input("Enter the name of the artwork")
     artist_name = st.text_input("Enter the artist name")
-    #initial_value = st.text_input("Enter start value for auction in ETH")
-    file = st.file_uploader("Upload your Artwork", type=["jpg", "jpeg", "png"])
+    initial_appraisal_value = st.text_input("Enter the initial appraisal amount")
+    file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
     if st.button("Register Artwork"):
-        # Use the `pin_artwork` helper function to pin the file to IPFS
-        artwork_ipfs_hash =  pin_artwork(artwork_name, file)
+        artwork_ipfs_hash = pin_artwork(artwork_name, file)
         artwork_uri = f"ipfs://{artwork_ipfs_hash}"
-        tx_hash = contract.functions.registerNFT(
+        image_ipfs_hash = pin_image(file)
+        tx_hash = contract.functions.registerArtwork(
             address,
             artwork_name,
             artist_name,
-            #int(initial_value),
+            int(initial_appraisal_value),
             artwork_uri
         ).transact({'from': address, 'gas': 1000000})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Transaction mined")
+        st.write("Transaction receipt mined:")
         #st.write(dict(receipt))
         st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
         st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
+        st.write("Your uploaded artwork:")
+        st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
+        #st.markdown(f"[Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
     st.markdown("---")
-
 
 
     art_list=[{'artwork_name': 'The Lake', 'author': "Boris",'init': 1.5, 'last_bid': 0, 'image': "https://www.andrisapse.com/prints/2281.jpg"},
         {'artwork_name': 'Sunshine', 'author': "Boris",'init': 1.1, 'last_bid': 0, 'image': "https://docs.gimp.org/en/images/tutorials/quickie-jpeg-100.jpg"}]
     if 'auction_list' not in st.session_state:
         st.session_state['auction_list']=art_list
+
+######
+# Niels
+######
+
 
     auction=st.button("Start new auction?")
     if auction:
