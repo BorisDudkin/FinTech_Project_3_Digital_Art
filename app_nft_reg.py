@@ -161,7 +161,7 @@ if selected == '🔨 Minting and Registration':
         image_ipfs_hash = pin_image(file)
 
         # create token ID for this contract
-        token_id = contract.functions.NFTRegistery._tokenIdCounter().call()
+        #token_id = contract.functions.registerArtwork(tokenId).call()
 
         tx_hash = contract.functions.registerArtwork(
             address,
