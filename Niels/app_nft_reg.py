@@ -16,8 +16,7 @@ import json
 from web3 import Web3
 from pathlib import Path
 from dotenv import load_dotenv
-import streamlit as st
-
+import pandas as pd
 from pinata import pin_file_to_ipfs, pin_json_to_ipfs, convert_data_to_json
 
 load_dotenv()
@@ -75,16 +74,18 @@ if selected == '🏠 Home':
 #######
 # NIELS
 #######
+
 if selected == '🔨 Minting and Registration':
     st.title('🔨 Mint and Register Your Artwork')
     st.write("---")
-
+    
+  
     ## Loads the contract once using cache
     @st.cache_resource()
     def load_contract():
 
         # Load the contract ABI
-        with open(Path('./contracts/compiled/NFT_registry_abi.json')) as f:
+        with open(Path('./contracts/compiled/NFT_registry_84_abi.json')) as f:
             contract_abi = json.load(f)
 
         # Set the contract address (this is the address of the deployed contract)
@@ -139,8 +140,9 @@ if selected == '🔨 Minting and Registration':
         json_report = convert_data_to_json(report_content)
         report_ipfs_hash = pin_json_to_ipfs(json_report)
         return report_ipfs_hash
+###
 
-    st.title("Art Registry Appraisal System")
+    st.title("Art Registration, mint your token")
     st.write("Choose an account to get started")
     accounts = w3.eth.accounts
     address = st.selectbox("Select Account", options=accounts)
@@ -150,12 +152,17 @@ if selected == '🔨 Minting and Registration':
     st.markdown("## Register New Artwork")
     artwork_name = st.text_input("Enter the name of the artwork")
     artist_name = st.text_input("Enter the artist name")
-    initial_appraisal_value = st.text_input("Enter the initial appraisal amount")
+    initial_appraisal_value = st.number_input("Enter Auction Starting Bid")
     file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
+
     if st.button("Register Artwork"):
         artwork_ipfs_hash = pin_artwork(artwork_name, file)
         artwork_uri = f"ipfs://{artwork_ipfs_hash}"
         image_ipfs_hash = pin_image(file)
+
+        # create token ID for this contract
+        token_id = contract.functions.NFTRegistery._tokenIdCounter().call()
+
         tx_hash = contract.functions.registerArtwork(
             address,
             artwork_name,
@@ -165,19 +172,43 @@ if selected == '🔨 Minting and Registration':
         ).transact({'from': address, 'gas': 1000000})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
         st.write("Transaction receipt mined:")
-        #st.write(dict(receipt))
+        st.write(dict(receipt))
+        st.markdown("---")
+
         st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
         st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
         st.write("Your uploaded artwork:")
         st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
-        #st.markdown(f"[Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
-    st.markdown("---")
+
+        #art_dict = []
+        #art_dict["artwork_name"] = artwork_name
+        #art_dict["author"] = artist_name
+        #art_dict["init"] = initial_appraisal_value
+        #art_dict["image"] = image_ipfs_hash
+        #art_dict["token_id"] = token_id
+
+        art_list = [artwork_name, artist_name, initial_appraisal_value, image_ipfs_hash]#,token_id]
+        st.write(art_list)
+
+        #df = pd.DataFrame(art_list, columns=['artwork_name', 'artist_name', 'init', 'image'])
+        #art_dict.append(art_dict)
+
+        #if art_dict not in st.session_state:
+        #    st.session_state.art_dict = art_dict
+        #st.write(df)
+
+        st.markdown("---")
+
+        #art_list.append(nft_info_dict)
+    #st.write("current data:", art_dict)
+    
 
 
-    art_list=[{'artwork_name': 'The Lake', 'author': "Boris",'init': 1.5, 'last_bid': 0, 'image': "https://www.andrisapse.com/prints/2281.jpg"},
-        {'artwork_name': 'Sunshine', 'author': "Boris",'init': 1.1, 'last_bid': 0, 'image': "https://docs.gimp.org/en/images/tutorials/quickie-jpeg-100.jpg"}]
-    if 'auction_list' not in st.session_state:
-        st.session_state['auction_list']=art_list
+    # art_list=[{'artwork_name': 'The Lake', 'author': "Boris",'init': 1.5, 'last_bid': 0, 'image': "https://www.andrisapse.com/prints/2281.jpg"},
+    #    {'artwork_name': 'Sunshine', 'author': "Boris",'init': 1.1, 'last_bid': 0, 'image': "https://docs.gimp.org/en/images/tutorials/quickie-jpeg-100.jpg"}]
+    
+#    if 'auction_list' not in st.session_state:
+#        st.session_state['auction_list']=art_list
 
 ######
 # Niels
@@ -214,7 +245,7 @@ if selected == '💰 Auction':
             art = art_list.pop(0)
             count_art +=1
 
-            time_sec = 10
+            time_sec = 20
             
             col1, col2, col3 = st.columns([1,3,2], gap='large')
             # my_form = st.form(key="Characteristics)")
