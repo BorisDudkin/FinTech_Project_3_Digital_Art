@@ -196,7 +196,7 @@ if selected == '🔨 Minting and Registration':
         art_dict["author"] = artist_name
         art_dict["init"] = initial_appraisal_value
         art_dict["last_bid"] = 0
-        art_dict["image"] = image_ipfs_hash
+        art_dict["image"] = "https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})"
         art_dict["token_id"] = token_id
         art_list=st.session_state['auction_list']
         art_list.append(art_dict)
