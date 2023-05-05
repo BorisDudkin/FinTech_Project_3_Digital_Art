@@ -93,7 +93,7 @@ if selected == '💰 Auction':
             art = art_list.pop(0)
             count_art +=1
 
-            time_sec = 10
+            time_sec = 60
             
             col1, col2, col3 = st.columns([1,3,2], gap='large')
             # my_form = st.form(key="Characteristics)")
