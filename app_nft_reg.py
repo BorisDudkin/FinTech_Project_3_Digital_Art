@@ -154,11 +154,12 @@ if selected == '🔨 Minting and Registration':
     artist_name = st.text_input("Enter the artist name")
     initial_appraisal_value = st.number_input("Enter Auction Starting Bid")
     file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
-    art_list = []
+    # art_list = []
     if 'auction_list' not in st.session_state:
-        st.session_state['auction_list'] = art_list
-    # else:
-    #     art_list=st.session_state['auction_list']
+        # st.session_state['auction_list'] = art_list
+        st.write("No registered items")
+    else:
+        st.session_state['auction_list'] = []
 
     if st.button("Register Artwork"):
         artwork_ipfs_hash = pin_artwork(artwork_name, file)
