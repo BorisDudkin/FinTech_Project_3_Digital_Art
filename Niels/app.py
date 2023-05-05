@@ -152,7 +152,7 @@ if selected == '🔨 Minting and Registration':
     st.markdown("## Register New Artwork")
     artwork_name = st.text_input("Enter the name of the artwork")
     artist_name = st.text_input("Enter the artist name")
-    initial_appraisal_value = st.number_input("Enter Auction Starting Bid (in Wei)", value = 0, step = 10000)
+    initial_appraisal_value = st.number_input("Enter Auction Starting Bid")
     file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
     # art_list = []
     if 'auction_list' not in st.session_state:
@@ -184,10 +184,17 @@ if selected == '🔨 Minting and Registration':
 
         st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
         st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
-        #st.write("Your uploaded artwork:")
-        #st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
+        st.write("Your uploaded artwork:")
+        st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
 
         #  temporary tokenId:
+        event_filter = contract.events.TokenId.createFilter(fromBlock='latest')
+        reports = event_filter.get_all_entries()
+        if reports:
+            for report in reports:
+                report_dictionary = dict(report)
+        st.write(report_dictionary)
+
         token_id= 0
 
         # crete a dictionary with the new art work
@@ -196,7 +203,7 @@ if selected == '🔨 Minting and Registration':
         art_dict["author"] = artist_name
         art_dict["init"] = initial_appraisal_value
         art_dict["last_bid"] = 0
-        art_dict["image"] = image_ipfs_hash
+        art_dict["image"] = "https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})"
         art_dict["token_id"] = token_id
         art_list=st.session_state['auction_list']
         art_list.append(art_dict)
@@ -274,8 +281,7 @@ if selected == '💰 Auction':
                 placeholder_2= st.empty()
                 with placeholder_2.container():
                     st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
-                    st.markdown(f"![Art](https://gateway.pinata.cloud/ipfs/{art['image']})")
-                    #st.markdown(art['image'])
+                    st.image(art['image'])
                     st.write(f"by: {art['author']}", key = 'author'+ str(count_art))
                     st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
                     st.write(f"Last Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
