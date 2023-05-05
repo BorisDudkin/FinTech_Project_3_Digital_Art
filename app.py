@@ -188,6 +188,13 @@ if selected == '🔨 Minting and Registration':
         st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
 
         #  temporary tokenId:
+        event_filter = contract.events.TokenId.createFilter(fromBlock='latest')
+        reports = event_filter.get_all_entries()
+        if reports:
+            for report in reports:
+                report_dictionary = dict(report)
+        st.write(report_dictionary)
+
         token_id= 0
 
         # crete a dictionary with the new art work
