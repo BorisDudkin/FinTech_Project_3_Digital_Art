@@ -85,7 +85,7 @@ if selected == '🔨 Minting and Registration':
     def load_contract():
 
         # Load the contract ABI
-        with open(Path('./contracts/compiled/NFT_registry_84_abi.json')) as f:
+        with open(Path('./contracts/compiled/NFT_registry_abi_token.json')) as f:
             contract_abi = json.load(f)
 
         # Set the contract address (this is the address of the deployed contract)
@@ -166,7 +166,8 @@ if selected == '🔨 Minting and Registration':
         image_ipfs_hash = pin_image(file)
 
         # create token ID for this contract
-        #token_id = contract.functions.registerArtwork(tokenId).call()
+        token_id = contract.tokenSupply().call()
+        st.write(token_id)
 
         tx_hash = contract.functions.registerArtwork(
             address,

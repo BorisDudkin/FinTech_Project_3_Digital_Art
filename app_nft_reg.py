@@ -204,7 +204,6 @@ if selected == '🔨 Minting and Registration':
         st.session_state['auction_list'] = art_list
         st.write(art_list)
 
-
         #st.write("2",st.session_state['auction_list'])
         
         #df = pd.DataFrame(art_list, columns=['artwork_name', 'artist_name', 'init', 'image'])
