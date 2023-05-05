@@ -154,6 +154,11 @@ if selected == '🔨 Minting and Registration':
     artist_name = st.text_input("Enter the artist name")
     initial_appraisal_value = st.number_input("Enter Auction Starting Bid")
     file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
+    art_list = []
+    if 'auction_list' not in st.session_state:
+        st.session_state['auction_list'] = art_list
+    # else:
+    #     art_list=st.session_state['auction_list']
 
     if st.button("Register Artwork"):
         artwork_ipfs_hash = pin_artwork(artwork_name, file)
@@ -178,18 +183,30 @@ if selected == '🔨 Minting and Registration':
         st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
         st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
         st.write("Your uploaded artwork:")
-        st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
+        #st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
 
-        #art_dict = []
-        #art_dict["artwork_name"] = artwork_name
-        #art_dict["author"] = artist_name
-        #art_dict["init"] = initial_appraisal_value
-        #art_dict["image"] = image_ipfs_hash
-        #art_dict["token_id"] = token_id
+        #st.write("1",st.session_state['auction_list'])
 
-        art_list = [artwork_name, artist_name, initial_appraisal_value, image_ipfs_hash]#,token_id]
+        #  temporary tokenId:
+        token_id= 0
+
+        # crete a dictionary with the new art work
+        art_dict ={}
+        art_dict["artwork_name"] = artwork_name
+        art_dict["author"] = artist_name
+        art_dict["init"] = initial_appraisal_value
+        art_dict["last_bid"] = 0
+        art_dict["image"] = image_ipfs_hash
+        art_dict["token_id"] = token_id
+        art_list=st.session_state['auction_list']
+        art_list.append(art_dict)
+        
+        st.session_state['auction_list'] = art_list
         st.write(art_list)
 
+
+        #st.write("2",st.session_state['auction_list'])
+        
         #df = pd.DataFrame(art_list, columns=['artwork_name', 'artist_name', 'init', 'image'])
         #art_dict.append(art_dict)
 
@@ -228,10 +245,15 @@ if selected == '💰 Auction':
     # author = "Boris"
     # init_value = 1.5
     # last_bid = 1.6
+
+    #st.write("3",st.session_state['auction_list'])
+
     if 'auction_list' not in st.session_state:
         st.info("### :magenda[There are no items to auction at the momement!]")
     else:
         art_list=st.session_state['auction_list']
+
+    #st.write("4",st.session_state['auction_list'])
 
     if "load_state" not in st.session_state:
             st.session_state.load_state = False
@@ -245,7 +267,7 @@ if selected == '💰 Auction':
             art = art_list.pop(0)
             count_art +=1
 
-            time_sec = 20
+            time_sec = 60
             
             col1, col2, col3 = st.columns([1,3,2], gap='large')
             # my_form = st.form(key="Characteristics)")
@@ -255,7 +277,10 @@ if selected == '💰 Auction':
                 placeholder_2= st.empty()
                 with placeholder_2.container():
                     st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
-                    st.image(art['image'])
+                    
+                    st.markdown(f"![Art](https://gateway.pinata.cloud/ipfs/{art['image']})")
+                    
+                    #st.image(art['image'])
                     st.write(f"by: {art['author']}", key = 'author'+ str(count_art))
                     st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
                     st.write(f"Last Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
@@ -295,7 +320,7 @@ if selected == '💰 Auction':
             placeholder_1.empty()
             placeholder_2.empty()
             placeholder_3.empty()
-        st.markdown("#### **:red[Auction ended!]**")
-        st.balloons()
+            st.balloons()
+        st.markdown("#### **:red[All auction ended!]**")
             # time.sleep(5)
             

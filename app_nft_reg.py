@@ -183,7 +183,9 @@ if selected == '🔨 Minting and Registration':
         st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
         st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
         st.write("Your uploaded artwork:")
-        st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
+        #st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
+
+        #st.write("1",st.session_state['auction_list'])
 
         #  temporary tokenId:
         token_id= 0
@@ -198,9 +200,13 @@ if selected == '🔨 Minting and Registration':
         art_dict["token_id"] = token_id
         art_list=st.session_state['auction_list']
         art_list.append(art_dict)
+        
         st.session_state['auction_list'] = art_list
         st.write(art_list)
 
+
+        #st.write("2",st.session_state['auction_list'])
+        
         #df = pd.DataFrame(art_list, columns=['artwork_name', 'artist_name', 'init', 'image'])
         #art_dict.append(art_dict)
 
@@ -239,10 +245,15 @@ if selected == '💰 Auction':
     # author = "Boris"
     # init_value = 1.5
     # last_bid = 1.6
+
+    #st.write("3",st.session_state['auction_list'])
+
     if 'auction_list' not in st.session_state:
         st.info("### :magenda[There are no items to auction at the momement!]")
     else:
         art_list=st.session_state['auction_list']
+
+    #st.write("4",st.session_state['auction_list'])
 
     if "load_state" not in st.session_state:
             st.session_state.load_state = False
@@ -256,7 +267,7 @@ if selected == '💰 Auction':
             art = art_list.pop(0)
             count_art +=1
 
-            time_sec = 20
+            time_sec = 60
             
             col1, col2, col3 = st.columns([1,3,2], gap='large')
             # my_form = st.form(key="Characteristics)")
@@ -266,7 +277,10 @@ if selected == '💰 Auction':
                 placeholder_2= st.empty()
                 with placeholder_2.container():
                     st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
-                    st.image(art['image'])
+                    
+                    st.markdown(f"![Art](https://gateway.pinata.cloud/ipfs/{art['image']})")
+                    
+                    #st.image(art['image'])
                     st.write(f"by: {art['author']}", key = 'author'+ str(count_art))
                     st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
                     st.write(f"Last Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
