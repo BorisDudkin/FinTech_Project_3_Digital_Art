@@ -154,11 +154,13 @@ if selected == '🔨 Minting and Registration':
     artist_name = st.text_input("Enter the artist name")
     initial_appraisal_value = st.number_input("Enter Auction Starting Bid")
     file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
-    art_list = []
+    # art_list = []
     if 'auction_list' not in st.session_state:
-        st.session_state['auction_list'] = art_list
+        # st.session_state['auction_list'] = art_list
+        # st.write("No registered items")
+        st.session_state['auction_list'] = []
     # else:
-    #     art_list=st.session_state['auction_list']
+    #     st.session_state['auction_list'] = []
 
     if st.button("Register Artwork"):
         artwork_ipfs_hash = pin_artwork(artwork_name, file)
@@ -183,11 +185,16 @@ if selected == '🔨 Minting and Registration':
         st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
         st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
         st.write("Your uploaded artwork:")
-        #st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
-
-        #st.write("1",st.session_state['auction_list'])
+        st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
 
         #  temporary tokenId:
+        event_filter = contract.events.TokenId.createFilter(fromBlock='latest')
+        reports = event_filter.get_all_entries()
+        if reports:
+            for report in reports:
+                report_dictionary = dict(report)
+        st.write(report_dictionary)
+
         token_id= 0
 
         # crete a dictionary with the new art work
@@ -196,17 +203,13 @@ if selected == '🔨 Minting and Registration':
         art_dict["author"] = artist_name
         art_dict["init"] = initial_appraisal_value
         art_dict["last_bid"] = 0
-        art_dict["image"] = image_ipfs_hash
+        art_dict["image"] = "https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})"
         art_dict["token_id"] = token_id
         art_list=st.session_state['auction_list']
         art_list.append(art_dict)
-        
         st.session_state['auction_list'] = art_list
         st.write(art_list)
 
-
-        #st.write("2",st.session_state['auction_list'])
-        
         #df = pd.DataFrame(art_list, columns=['artwork_name', 'artist_name', 'init', 'image'])
         #art_dict.append(art_dict)
 
@@ -231,11 +234,15 @@ if selected == '🔨 Minting and Registration':
 # Niels
 ######
 
-
+    st.write(st.session_state)
     auction=st.button("Start new auction?")
+    st.write(auction)
+    if "load_state" not in st.session_state:
+        st.session_state.load_state = False
     if auction:
-        if "load_state" not in st.session_state:
-            st.session_state.load_state = True
+        st.session_state.load_state = True
+        st.write(st.session_state)
+    st.write(st.session_state)
 
 if selected == '💰 Auction':
     st.title('💰 Auction Your Artwork')
@@ -245,29 +252,26 @@ if selected == '💰 Auction':
     # author = "Boris"
     # init_value = 1.5
     # last_bid = 1.6
-
-    #st.write("3",st.session_state['auction_list'])
-
     if 'auction_list' not in st.session_state:
         st.info("### :magenda[There are no items to auction at the momement!]")
     else:
         art_list=st.session_state['auction_list']
-
-    #st.write("4",st.session_state['auction_list'])
 
     if "load_state" not in st.session_state:
             st.session_state.load_state = False
     # auction=st.button("Start new auction?")
     # if "load_state" not in st.session_state:
     #         st.session_state.load_state = False
+    st.write(st.session_state)
     auction = st.session_state.load_state
     if auction:
         while len(art_list)>0:
         # for art in art_list:
             art = art_list.pop(0)
+            st.session_state['auction_list'] = art_list
             count_art +=1
 
-            time_sec = 60
+            time_sec = 20
             
             col1, col2, col3 = st.columns([1,3,2], gap='large')
             # my_form = st.form(key="Characteristics)")
@@ -277,10 +281,7 @@ if selected == '💰 Auction':
                 placeholder_2= st.empty()
                 with placeholder_2.container():
                     st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
-                    
-                    st.markdown(f"![Art](https://gateway.pinata.cloud/ipfs/{art['image']})")
-                    
-                    #st.image(art['image'])
+                    st.image(art['image'])
                     st.write(f"by: {art['author']}", key = 'author'+ str(count_art))
                     st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
                     st.write(f"Last Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
@@ -322,5 +323,6 @@ if selected == '💰 Auction':
             placeholder_3.empty()
             st.balloons()
         st.markdown("#### **:red[All auction ended!]**")
+        st.session_state.load_state = False
+        st.write(st.session_state)
             # time.sleep(5)
-            

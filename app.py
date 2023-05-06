@@ -327,6 +327,11 @@ if selected == '💰 Auction':
             st.balloons()
         st.markdown("#### **:red[All auction ended!]**")
         st.session_state.load_state = False
+<<<<<<< HEAD
         # st.write(st.session_state)
             # time.sleep(5)
             
+=======
+        st.write(st.session_state)
+            # time.sleep(5)
+>>>>>>> 757c5d5da15a43afb51182e2be24a623e7928620
