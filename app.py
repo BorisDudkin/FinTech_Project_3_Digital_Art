@@ -5,6 +5,7 @@ import requests
 import streamlit as st
 from streamlit_lottie import st_lottie, st_lottie_spinner
 from streamlit_option_menu import option_menu
+from attributedict.collections import AttributeDict
 
 st.set_page_config(page_title="Digital Solutions", layout='wide')
 
@@ -52,7 +53,7 @@ with st.sidebar:
 
 if selected == '🏠 Home':
 
-    st.title('Digital Art Solutions')
+    st.title('🏠 Digital Art Solutions')
     st.write("---")
     st.image('Images/sc.png',use_column_width=True)
 
@@ -85,7 +86,7 @@ if selected == '🔨 Minting and Registration':
     def load_contract():
 
         # Load the contract ABI
-        with open(Path('./contracts/compiled/NFT_registry_84_abi.json')) as f:
+        with open(Path('./contracts/compiled/NFT_registry.json')) as f:
             contract_abi = json.load(f)
 
         # Set the contract address (this is the address of the deployed contract)
@@ -152,7 +153,7 @@ if selected == '🔨 Minting and Registration':
     st.markdown("## Register New Artwork")
     artwork_name = st.text_input("Enter the name of the artwork")
     artist_name = st.text_input("Enter the artist name")
-    initial_appraisal_value = st.number_input("Enter Auction Starting Bid")
+    initial_appraisal_value = st.number_input("Enter Auction Starting Bid", step=1000)
     file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
     # art_list = []
     if 'auction_list' not in st.session_state:
@@ -178,8 +179,8 @@ if selected == '🔨 Minting and Registration':
             artwork_uri
         ).transact({'from': address, 'gas': 1000000})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Transaction receipt mined:")
-        st.write(dict(receipt))
+        # st.write("Transaction receipt mined:")
+        # st.write(dict(receipt))
         st.markdown("---")
 
         st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
@@ -193,9 +194,11 @@ if selected == '🔨 Minting and Registration':
         if reports:
             for report in reports:
                 report_dictionary = dict(report)
-        st.write(report_dictionary)
+        # st.write(int(report_dictionary['args'].tokenId))
 
-        token_id= 0
+        token_id = int(report_dictionary['args'].tokenId)
+
+        # token_id=0
 
         # crete a dictionary with the new art work
         art_dict ={}
@@ -208,7 +211,7 @@ if selected == '🔨 Minting and Registration':
         art_list=st.session_state['auction_list']
         art_list.append(art_dict)
         st.session_state['auction_list'] = art_list
-        st.write(art_list)
+        # st.write(art_list)
 
         #df = pd.DataFrame(art_list, columns=['artwork_name', 'artist_name', 'init', 'image'])
         #art_dict.append(art_dict)
@@ -234,15 +237,15 @@ if selected == '🔨 Minting and Registration':
 # Niels
 ######
 
-    st.write(st.session_state)
+    # st.write(st.session_state)
     auction=st.button("Start new auction?")
-    st.write(auction)
+    # st.write(auction)
     if "load_state" not in st.session_state:
         st.session_state.load_state = False
     if auction:
         st.session_state.load_state = True
-        st.write(st.session_state)
-    st.write(st.session_state)
+        # st.write(st.session_state)
+    # st.write(st.session_state)
 
 if selected == '💰 Auction':
     st.title('💰 Auction Your Artwork')
@@ -262,7 +265,7 @@ if selected == '💰 Auction':
     # auction=st.button("Start new auction?")
     # if "load_state" not in st.session_state:
     #         st.session_state.load_state = False
-    st.write(st.session_state)
+    # st.write(st.session_state)
     auction = st.session_state.load_state
     if auction:
         while len(art_list)>0:
@@ -283,8 +286,8 @@ if selected == '💰 Auction':
                     st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
                     st.image(art['image'])
                     st.write(f"by: {art['author']}", key = 'author'+ str(count_art))
-                    st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
-                    st.write(f"Last Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
+                    st.write(f"Initial Value: **:blue[{art['init']}]** wei", key = 'Initial_value'+ str(count_art))
+                    st.write(f"Highest Bid: **:blue[{art['last_bid']}]** wei", key = 'last_bid'+ str(count_art))
                     # st.write(f"My name {art['init']}", key = "Initial_value"+ str(count_art))
 
             with col1:
@@ -324,6 +327,6 @@ if selected == '💰 Auction':
             st.balloons()
         st.markdown("#### **:red[All auction ended!]**")
         st.session_state.load_state = False
-        st.write(st.session_state)
+        # st.write(st.session_state)
             # time.sleep(5)
             
