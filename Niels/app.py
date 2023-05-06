@@ -5,6 +5,7 @@ import requests
 import streamlit as st
 from streamlit_lottie import st_lottie, st_lottie_spinner
 from streamlit_option_menu import option_menu
+from attributedict.collections import AttributeDict
 
 st.set_page_config(page_title="Digital Solutions", layout='wide')
 
@@ -52,7 +53,7 @@ with st.sidebar:
 
 if selected == '🏠 Home':
 
-    st.title('Digital Art Solutions')
+    st.title('🏠 Digital Art Solutions')
     st.write("---")
     st.image('Images/sc.png',use_column_width=True)
 
@@ -82,25 +83,48 @@ if selected == '🔨 Minting and Registration':
   
     ## Loads the contract once using cache
     @st.cache_resource()
-    def load_contract():
+    def load_contract_1():
 
         # Load the contract ABI
-        with open(Path('./contracts/compiled/NFT_registry_84_abi.json')) as f:
+        with open(Path('./contracts/compiled/NFT_registry_abi.json')) as f:
             contract_abi = json.load(f)
 
         # Set the contract address (this is the address of the deployed contract)
-        contract_address = os.getenv("SMART_CONTRACT_ADDRESS")
+        contract_address_1 = os.getenv("SMART_CONTRACT_ADDRESS_1")
 
         # Get the contract
-        contract = w3.eth.contract(
-            address=contract_address,
+        contract_1 = w3.eth.contract(
+            address=contract_address_1,
             abi=contract_abi
         )
+        return contract_1
+    contract_1 = load_contract_1()
+    st.write('is contract #1 loaded?',contract_1)
 
-        return contract
+
+    @st.cache_resource()
+    def load_contract_2():
 
     # Load the contract
-    contract = load_contract()
+
+    # Load the contract ABI
+        with open(Path('./contracts/compiled/NFT_Auction_abi.json')) as f:
+            contract_abi_2 = json.load(f)
+
+        # Set the contract address (this is the address of the deployed contract)
+        contract_address_2 = os.getenv("SMART_CONTRACT_ADDRESS_2")
+
+        # Get the contract
+        contract_2 = w3.eth.contract(
+            address=contract_address_2,
+            abi=contract_abi_2
+        )
+
+        return contract_2
+    contract_2 = load_contract_2()
+    st.write('is contract #2 loaded?',contract_2)
+
+
 
 # Helper functions to pin files and json to Pinata
 
@@ -152,7 +176,7 @@ if selected == '🔨 Minting and Registration':
     st.markdown("## Register New Artwork")
     artwork_name = st.text_input("Enter the name of the artwork")
     artist_name = st.text_input("Enter the artist name")
-    initial_appraisal_value = st.number_input("Enter Auction Starting Bid")
+    initial_appraisal_value = st.number_input("Enter Auction Starting Bid", step=1000)
     file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
     # art_list = []
     if 'auction_list' not in st.session_state:
@@ -170,32 +194,39 @@ if selected == '🔨 Minting and Registration':
         # create token ID for this contract
         #token_id = contract.functions.registerArtwork(tokenId).call()
 
-        tx_hash = contract.functions.registerArtwork(
+        tx_hash = contract_1.functions.registerArtwork(
             address,
             artwork_name,
             artist_name,
             int(initial_appraisal_value),
             artwork_uri
         ).transact({'from': address, 'gas': 1000000})
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Transaction receipt mined:")
-        st.write(dict(receipt))
+        receipt_1 = w3.eth.waitForTransactionReceipt(tx_hash)
+        # st.write("Transaction receipt mined:")
+        #st.write('recepit#1',dict(receipt_1))
         st.markdown("---")
+
+
 
         st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
         st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
         st.write("Your uploaded artwork:")
-        st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
+        #st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
+
+        #st.write('checker here')
+
 
         #  temporary tokenId:
-        event_filter = contract.events.TokenId.createFilter(fromBlock='latest')
+        event_filter = contract_1.events.TokenId.createFilter(fromBlock='latest')
+        st.write(event_filter)
         reports = event_filter.get_all_entries()
+        st.write(reports)
         if reports:
             for report in reports:
                 report_dictionary = dict(report)
-        st.write(report_dictionary)
+        st.write('TokenID:',int(report_dictionary['args'].tokenId))
 
-        token_id= 0
+        token_id = int(report_dictionary['args'].tokenId)
 
         # crete a dictionary with the new art work
         art_dict ={}
@@ -203,7 +234,7 @@ if selected == '🔨 Minting and Registration':
         art_dict["author"] = artist_name
         art_dict["init"] = initial_appraisal_value
         art_dict["last_bid"] = 0
-        art_dict["image"] = "https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})"
+        art_dict["image"] = image_ipfs_hash
         art_dict["token_id"] = token_id
         art_list=st.session_state['auction_list']
         art_list.append(art_dict)
@@ -222,7 +253,38 @@ if selected == '🔨 Minting and Registration':
         #art_list.append(nft_info_dict)
     #st.write("current data:", art_dict)
     
+        # TEST IF CONTRACT 2 is available 
+        
+        # contract start input
+        address_nft_reg = "0x7535550B7FB58623B1AAA06347386fB2C33E500b" # owner of the token now still hardcoded to ttest
+        token = "0x20AbEFAeb0EAf38315b55C26424f24c5128C447E" # address of NFT Register
+        #token ID is token_id, taken from above dictionary
+        
+        ### test if cotnract 2 (Auction file) is available:
 
+        tx_hash_2 = contract_2.functions.setSeller(
+            address_nft_reg,
+        ).transact({'from':address_nft_reg, 'gas':1000000})
+
+        st.write('check1')
+
+        tx_hash_3 = contract_2.functions.start(
+            token,
+            token_id,
+            initial_appraisal_value
+        ).transact({'from':address, 'gas':1000000})
+
+        st.write('check2')
+
+        receipt_3 = w3.eth.waitForTransactionReceipt(tx_hash_3)
+        st.write('receipt#2',dict(receipt_3))
+
+        st.write('check3')
+
+        art_token_id = st.number_input("Artwork ID", value=0, step=1)
+        auction_filter = contract_1.events.TokenId.createFilter(fromBlock="0x0", argument_filters={"tokenId": art_token_id})
+
+        st.write('check4')
 
     # art_list=[{'artwork_name': 'The Lake', 'author': "Boris",'init': 1.5, 'last_bid': 0, 'image': "https://www.andrisapse.com/prints/2281.jpg"},
     #    {'artwork_name': 'Sunshine', 'author': "Boris",'init': 1.1, 'last_bid': 0, 'image': "https://docs.gimp.org/en/images/tutorials/quickie-jpeg-100.jpg"}]
@@ -234,15 +296,15 @@ if selected == '🔨 Minting and Registration':
 # Niels
 ######
 
-    st.write(st.session_state)
+    # st.write(st.session_state)
     auction=st.button("Start new auction?")
-    st.write(auction)
+    # st.write(auction)
     if "load_state" not in st.session_state:
         st.session_state.load_state = False
     if auction:
         st.session_state.load_state = True
-        st.write(st.session_state)
-    st.write(st.session_state)
+        # st.write(st.session_state)
+    # st.write(st.session_state)
 
 if selected == '💰 Auction':
     st.title('💰 Auction Your Artwork')
@@ -262,7 +324,7 @@ if selected == '💰 Auction':
     # auction=st.button("Start new auction?")
     # if "load_state" not in st.session_state:
     #         st.session_state.load_state = False
-    st.write(st.session_state)
+    # st.write(st.session_state)
     auction = st.session_state.load_state
     if auction:
         while len(art_list)>0:
@@ -281,10 +343,11 @@ if selected == '💰 Auction':
                 placeholder_2= st.empty()
                 with placeholder_2.container():
                     st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
-                    st.image(art['image'])
+                    st.markdown(f"![Art](https://gateway.pinata.cloud/ipfs/{art['image']})")
+                    #st.image(art['image'])
                     st.write(f"by: {art['author']}", key = 'author'+ str(count_art))
-                    st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
-                    st.write(f"Last Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
+                    st.write(f"Initial Value: **:blue[{art['init']}]** wei", key = 'Initial_value'+ str(count_art))
+                    st.write(f"Highest Bid: **:blue[{art['last_bid']}]** wei", key = 'last_bid'+ str(count_art))
                     # st.write(f"My name {art['init']}", key = "Initial_value"+ str(count_art))
 
             with col1:
@@ -324,5 +387,6 @@ if selected == '💰 Auction':
             st.balloons()
         st.markdown("#### **:red[All auction ended!]**")
         st.session_state.load_state = False
-        st.write(st.session_state)
+        # st.write(st.session_state)
             # time.sleep(5)
+            
