@@ -167,7 +167,6 @@ if selected == '🔨 Minting and Registration':
     #     st.session_state['auction_list'] = []
 
     if register.button("Register Artwork"):
-        my_list=[]
         artwork_ipfs_hash = pin_artwork(artwork_name, file)
         artwork_uri = f"ipfs://{artwork_ipfs_hash}"
         image_ipfs_hash = pin_image(file)
@@ -219,8 +218,9 @@ if selected == '🔨 Minting and Registration':
             my_list= st.session_state['my_list']
             my_list.append(art_dict)
             st.session_state['my_list']=my_list
-        for art in my_list:
-            a_list.write(f"NFT {art['artwork_name']}")
+            for art in my_list:
+                a_list.write(art)
+                a_list.write(f"NFT {art['artwork_name']}")
         auction=a_list.button("Start new auction?")
         if auction:
             art_list=st.session_state['auction_list']
