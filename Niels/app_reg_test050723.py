@@ -5,6 +5,7 @@ import requests
 import streamlit as st
 from streamlit_lottie import st_lottie, st_lottie_spinner
 from streamlit_option_menu import option_menu
+from attributedict.collections import AttributeDict
 
 st.set_page_config(page_title="Digital Solutions", layout='wide')
 
@@ -52,7 +53,7 @@ with st.sidebar:
 
 if selected == '🏠 Home':
 
-    st.title('Digital Art Solutions')
+    st.title('🏠 Digital Art Solutions')
     st.write("---")
     st.image('Images/sc.png',use_column_width=True)
 
@@ -90,6 +91,7 @@ if selected == '🔨 Minting and Registration':
 
         # Set the contract address (this is the address of the deployed contract)
         contract_address = os.getenv("SMART_CONTRACT_ADDRESS")
+        #st.write(contract_address)
 
         # Get the contract
         contract = w3.eth.contract(
@@ -141,32 +143,39 @@ if selected == '🔨 Minting and Registration':
         report_ipfs_hash = pin_json_to_ipfs(json_report)
         return report_ipfs_hash
 ###
+    if 'auction_list' not in st.session_state:
+        st.session_state['auction_list'] = []
 
     st.title("Art Registration, mint your token")
-    st.write("Choose an account to get started")
+    register, a_list = st.columns(2, gap='large')
+    register.write("Choose an account to get started")
     accounts = w3.eth.accounts
-    address = st.selectbox("Select Account", options=accounts)
-    st.markdown("---")
+    address = register.selectbox("Select Account", options=accounts)
+    
+    #st.write('address1',address)
+    
+    register.markdown("---")
 
     # Register New Artwork
-    st.markdown("## Register New Artwork")
-    artwork_name = st.text_input("Enter the name of the artwork")
-    artist_name = st.text_input("Enter the artist name")
-    initial_appraisal_value = st.number_input("Enter Auction Starting Bid")
-    file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
+    register.markdown("## Register New Artwork")
+    artwork_name = register.text_input("Enter the name of the artwork")
+    artist_name = register.text_input("Enter the artist name")
+    initial_appraisal_value = register.number_input("Enter Auction Starting Bid", step=1000)
+    file = register.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
     # art_list = []
-    if 'auction_list' not in st.session_state:
-        # st.session_state['auction_list'] = art_list
-        # st.write("No registered items")
-        st.session_state['auction_list'] = []
+
     # else:
     #     st.session_state['auction_list'] = []
 
-    if st.button("Register Artwork"):
+    if register.button("Register Artwork"):
+        #if 'my_list' not in register.session_state:
+        #    register.session_state = my_list=[]
+        my_list=[]
         artwork_ipfs_hash = pin_artwork(artwork_name, file)
         artwork_uri = f"ipfs://{artwork_ipfs_hash}"
         image_ipfs_hash = pin_image(file)
-
+        
+        #st.write('address2',address)
         # create token ID for this contract
         #token_id = contract.functions.registerArtwork(tokenId).call()
 
@@ -178,14 +187,14 @@ if selected == '🔨 Minting and Registration':
             artwork_uri
         ).transact({'from': address, 'gas': 1000000})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write("Transaction receipt mined:")
-        st.write(dict(receipt))
-        st.markdown("---")
+        # st.write("Transaction receipt mined:")
+        # st.write(dict(receipt))
+        register.markdown("---")
 
-        st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
-        st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
-        st.write("Your uploaded artwork:")
-        st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
+        register.write("You can view the pinned metadata file with the following IPFS Gateway Link")
+        register.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
+        register.write("Your uploaded artwork:")
+        register.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
 
         #  temporary tokenId:
         event_filter = contract.events.TokenId.createFilter(fromBlock='latest')
@@ -193,136 +202,156 @@ if selected == '🔨 Minting and Registration':
         if reports:
             for report in reports:
                 report_dictionary = dict(report)
-        st.write(report_dictionary)
+        # st.write(int(report_dictionary['args'].tokenId))
 
-        token_id= 0
+        token_id = int(report_dictionary['args'].tokenId)
+        #st.write(token_id)
+
+        # token_id=0
 
         # crete a dictionary with the new art work
         art_dict ={}
+        art_dict["seller"] = address
         art_dict["artwork_name"] = artwork_name
         art_dict["author"] = artist_name
         art_dict["init"] = initial_appraisal_value
         art_dict["last_bid"] = 0
         art_dict["image"] = "https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})"
         art_dict["token_id"] = token_id
-        art_list=st.session_state['auction_list']
-        art_list.append(art_dict)
-        st.session_state['auction_list'] = art_list
-        st.write(art_list)
 
-        #df = pd.DataFrame(art_list, columns=['artwork_name', 'artist_name', 'init', 'image'])
-        #art_dict.append(art_dict)
+        st.write(art_dict)
+        st.write('before button',my_list)
 
-        #if art_dict not in st.session_state:
-        #    st.session_state.art_dict = art_dict
-        #st.write(df)
+        auc_list=register.checkbox('add NFT to list?')
+        
+        st.write(auc_list)
+
+        if auc_list:
+            my_list.append(art_dict)
+            st.write('after button',my_list)
+            #st.write(my_list)
+        
+        
+
+        for art in my_list:
+            a_list.write(f"NFT {art['artwork_name']}")
+        
+        auction=a_list.button("Start new auction?")
+        if auction:
+            art_list=st.session_state['auction_list']
+            joint_list = art_list + my_list
+            # art_list.append(art_dict)
+            st.session_state['auction_list'] = joint_list
 
         st.markdown("---")
-
-        #art_list.append(nft_info_dict)
-    #st.write("current data:", art_dict)
-    
-
-
-    # art_list=[{'artwork_name': 'The Lake', 'author': "Boris",'init': 1.5, 'last_bid': 0, 'image': "https://www.andrisapse.com/prints/2281.jpg"},
-    #    {'artwork_name': 'Sunshine', 'author': "Boris",'init': 1.1, 'last_bid': 0, 'image': "https://docs.gimp.org/en/images/tutorials/quickie-jpeg-100.jpg"}]
-    
-#    if 'auction_list' not in st.session_state:
-#        st.session_state['auction_list']=art_list
-
-######
-# Niels
-######
-
-    st.write(st.session_state)
-    auction=st.button("Start new auction?")
-    st.write(auction)
-    if "load_state" not in st.session_state:
-        st.session_state.load_state = False
-    if auction:
-        st.session_state.load_state = True
-        st.write(st.session_state)
-    st.write(st.session_state)
+    # st.write(st.session_state)
+    # auction=st.button("Start new auction?")
+    # st.write(auction)
+    # if "load_state" not in st.session_state:
+    #     st.session_state.load_state = False
+    # if auction:
+    #     st.session_state.load_state = True
+        # st.write(st.session_state)
+    # st.write(st.session_state)
 
 if selected == '💰 Auction':
-    st.title('💰 Auction Your Artwork')
+    st.title('💰 Auction')
     st.write("---")
     count_art = 0
-    # artwork_name= 'The Lake'
-    # author = "Boris"
-    # init_value = 1.5
-    # last_bid = 1.6
+
     if 'auction_list' not in st.session_state:
         st.info("### :magenda[There are no items to auction at the momement!]")
     else:
         art_list=st.session_state['auction_list']
 
-    if "load_state" not in st.session_state:
-            st.session_state.load_state = False
-    # auction=st.button("Start new auction?")
-    # if "load_state" not in st.session_state:
-    #         st.session_state.load_state = False
-    st.write(st.session_state)
-    auction = st.session_state.load_state
-    if auction:
-        while len(art_list)>0:
-        # for art in art_list:
-            art = art_list.pop(0)
-            st.session_state['auction_list'] = art_list
-            count_art +=1
 
-            time_sec = 20
+    while len(art_list)>0:
+    # for art in art_list:
+        art = art_list.pop(0)
+        st.session_state['auction_list'] = art_list
+        count_art +=1
+
+        #set auction time to 3 min
+        time_auction = 130
+        counter_auction = time_auction
+        time_withdraw = time_auction + 20
+        time_sec = time_withdraw
+
+        
+        col1, col2, col3 = st.columns([1,2,2], gap='large')
+        # my_form = st.form(key="Characteristics)")
+        # with st_lottie_spinner(lottie_json_auction, height=100):
             
-            col1, col2, col3 = st.columns([1,3,2], gap='large')
-            # my_form = st.form(key="Characteristics)")
-            # with st_lottie_spinner(lottie_json_auction, height=100):
+        with col2:
+            placeholder_2= st.empty()
+            with placeholder_2.container():
+                st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
+                st.image(art['image'], width = 400)
+                st.write(f"Creator: {art['author']}", key = 'author'+ str(count_art))
+                st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
+                st.write(f"Highest Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
+                # st.write(f"My name {art['init']}", key = "Initial_value"+ str(count_art))
+
+        with col1:
+            placeholder_1= st.empty()
+            placeholder_4= st.empty()
+
+        with col3:
+            placeholder_3= st.empty()
+            placeholder_5= st.empty()
+            with placeholder_3.container():
+                # st.write('#### Bid/Withdraw', key = 'bw'+ str(count_art))
+                st.text_input(" #### Bidder's Address", key = 'bid_address'+ str(count_art))
                 
-            with col2:
-                placeholder_2= st.empty()
-                with placeholder_2.container():
-                    st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
-                    st.image(art['image'])
-                    st.write(f"by: {art['author']}", key = 'author'+ str(count_art))
-                    st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
-                    st.write(f"Last Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
-                    # st.write(f"My name {art['init']}", key = "Initial_value"+ str(count_art))
+                bid, withdr = st.columns(2, gap = 'large')
+                with bid:
+                    st.number_input("Bid (in ETH)", key = 'bid'+ str(count_art))
+                    st.button('Place Bid', key = 'order'+ str(count_art))
+                with withdr:
+                    st.button('Withdraw Bid', key = 'withdraw'+ str(count_art))
 
-            with col1:
-                placeholder_1= st.empty()
-                    # count_header=st.empty()
-                    # time_header=st.empty()
+        while time_sec:
+            time_sec-=1
+            counter_auction-=1
+            n1 = counter_auction / 3600
+            hours = int(counter_auction // 3600)
+            n2 = (n1-hours)*60
+            mins = int(math.floor(n2))
+            n3 = n2-mins
+            secs = int(round(n3*60,0))
+            # hours, remainder = divmod(counter_auction, 3600)
+            # mins, secs = divmod(remainder, 60)
+            time_now = '{:02d}:{:02d}:{:02d}'.format(hours, mins, secs)
 
-            with col3:
-                placeholder_3= st.empty()
-                with placeholder_3.container():
-                    st.write('#')
-                    st.write('#')
-                    my_form = st.form(key="bidder"+ str(count_art))
-                    my_form.subheader('Bid')
-                    my_form.text_input("Bidder's address")
-                    my_form.number_input("Bid (in ETH)")
-                    my_form.form_submit_button('Place order')
+            #withdrawl remainder
+            m1 = time_sec / 3600
+            hours_w = int(time_sec // 3600)
+            m2 = (m1-hours_w)*60
+            mins_w = int(math.floor(m2))
+            m3 = m2-mins_w
+            secs_w = int(round(m3*60,0))
+            # hours_w, remainder_w = divmod(time_sec, 3600)
+            # mins_w, secs_w = divmod(remainder_w, 60)
+            time_now_w = '{:02d}:{:02d}:{:02d}'.format(hours_w, mins_w, secs_w)
 
-            while time_sec:
-                    
-                time_sec-=1
-                mins, secs = divmod(time_sec, 60)
-                time_now = '{:02d}:{:02d}'.format(mins, secs)
+            if counter_auction>0:
                 with placeholder_1.container():
-                    st.markdown('#### Count-down')
+                    st.markdown('##### Auction Count-down')
                     st.subheader(f'**:green[{time_now}]**')
-                    st_lottie(lottie_json_auction, height=180, key = str(time_sec)+str(count_art))
-                    # my_form.subheader('The Lake')
-                    # my_form.image("https://www.andrisapse.com/prints/2281.jpg")
-                    # my_form.text_input("The address", key = time_sec)
-                    # my_form.form_submit_button('Submit your selections for price prediction')
-                time.sleep(1)
-                    # time_sec-=1
-            placeholder_1.empty()
-            placeholder_2.empty()
-            placeholder_3.empty()
-            st.balloons()
-        st.markdown("#### **:red[All auction ended!]**")
-        st.session_state.load_state = False
-        st.write(st.session_state)
-            # time.sleep(5)
+                with placeholder_4.container():
+                    st_lottie(lottie_json_auction, width=180, key = str(time_sec)+str(count_art))
+            else:
+                with placeholder_1.container():
+                    st.markdown('##### Auction ended. Withdraw bids within:')
+                    st.subheader(f'**:red[{time_now_w}]**')
+                placeholder_4.empty()               
+
+            time.sleep(1)
+                # time_sec-=1
+        placeholder_1.empty()
+        placeholder_2.empty()
+        placeholder_3.empty()
+        st.balloons()
+    st.markdown("#### **:red[All auction ended!]**")
+
+

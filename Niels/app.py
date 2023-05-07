@@ -236,6 +236,7 @@ if selected == '🔨 Minting and Registration':
         art_dict["last_bid"] = 0
         art_dict["image"] = image_ipfs_hash
         art_dict["token_id"] = token_id
+        art_dict["owner"] = address
         art_list=st.session_state['auction_list']
         art_list.append(art_dict)
         st.session_state['auction_list'] = art_list
