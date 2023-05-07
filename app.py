@@ -248,7 +248,7 @@ if selected == '🔨 Minting and Registration':
     # st.write(st.session_state)
 
 if selected == '💰 Auction':
-    st.title('💰 Auction Your Artwork')
+    st.title('💰 Auction')
     st.write("---")
     count_art = 0
     # artwork_name= 'The Lake'
@@ -274,9 +274,14 @@ if selected == '💰 Auction':
             st.session_state['auction_list'] = art_list
             count_art +=1
 
-            time_sec = 20
+            #set auction time to 3 min
+            time_auction = 130
+            counter_auction = time_auction
+            time_withdraw = time_auction + 20
+            time_sec = time_withdraw
+
             
-            col1, col2, col3 = st.columns([1,3,2], gap='large')
+            col1, col2, col3 = st.columns([1,2,2], gap='large')
             # my_form = st.form(key="Characteristics)")
             # with st_lottie_spinner(lottie_json_auction, height=100):
                 
@@ -284,41 +289,66 @@ if selected == '💰 Auction':
                 placeholder_2= st.empty()
                 with placeholder_2.container():
                     st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
-                    st.image(art['image'])
-                    st.write(f"by: {art['author']}", key = 'author'+ str(count_art))
-                    st.write(f"Initial Value: **:blue[{art['init']}]** wei", key = 'Initial_value'+ str(count_art))
-                    st.write(f"Highest Bid: **:blue[{art['last_bid']}]** wei", key = 'last_bid'+ str(count_art))
+                    st.image(art['image'], width = 400)
+                    st.write(f"Creator: {art['author']}", key = 'author'+ str(count_art))
+                    st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
+                    st.write(f"Highest Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
                     # st.write(f"My name {art['init']}", key = "Initial_value"+ str(count_art))
 
             with col1:
                 placeholder_1= st.empty()
-                    # count_header=st.empty()
-                    # time_header=st.empty()
+                placeholder_4= st.empty()
 
             with col3:
                 placeholder_3= st.empty()
+                placeholder_5= st.empty()
                 with placeholder_3.container():
-                    st.write('#')
-                    st.write('#')
-                    my_form = st.form(key="bidder"+ str(count_art))
-                    my_form.subheader('Bid')
-                    my_form.text_input("Bidder's address")
-                    my_form.number_input("Bid (in ETH)")
-                    my_form.form_submit_button('Place order')
+                    # st.write('#### Bid/Withdraw', key = 'bw'+ str(count_art))
+                    st.text_input(" #### Bidder's Address", key = 'bid_address'+ str(count_art))
+                    
+                    bid, withdr = st.columns(2, gap = 'large')
+                    with bid:
+                        st.number_input("Bid (in ETH)", key = 'bid'+ str(count_art))
+                        st.button('Place Bid', key = 'order'+ str(count_art))
+                    with withdr:
+                        st.button('Withdraw Bid', key = 'withdraw'+ str(count_art))
 
             while time_sec:
-                    
                 time_sec-=1
-                mins, secs = divmod(time_sec, 60)
-                time_now = '{:02d}:{:02d}'.format(mins, secs)
-                with placeholder_1.container():
-                    st.markdown('#### Count-down')
-                    st.subheader(f'**:green[{time_now}]**')
-                    st_lottie(lottie_json_auction, height=180, key = str(time_sec)+str(count_art))
-                    # my_form.subheader('The Lake')
-                    # my_form.image("https://www.andrisapse.com/prints/2281.jpg")
-                    # my_form.text_input("The address", key = time_sec)
-                    # my_form.form_submit_button('Submit your selections for price prediction')
+                counter_auction-=1
+                n1 = counter_auction / 3600
+                hours = int(counter_auction // 3600)
+                n2 = (n1-hours)*60
+                mins = int(math.floor(n2))
+                n3 = n2-mins
+                secs = int(round(n3*60,0))
+                # hours, remainder = divmod(counter_auction, 3600)
+                # mins, secs = divmod(remainder, 60)
+                time_now = '{:02d}:{:02d}:{:02d}'.format(hours, mins, secs)
+
+                #withdrawl remainder
+                m1 = time_sec / 3600
+                hours_w = int(time_sec // 3600)
+                m2 = (m1-hours_w)*60
+                mins_w = int(math.floor(m2))
+                m3 = m2-mins_w
+                secs_w = int(round(m3*60,0))
+                # hours_w, remainder_w = divmod(time_sec, 3600)
+                # mins_w, secs_w = divmod(remainder_w, 60)
+                time_now_w = '{:02d}:{:02d}:{:02d}'.format(hours_w, mins_w, secs_w)
+
+                if counter_auction>0:
+                    with placeholder_1.container():
+                        st.markdown('##### Auction Count-down')
+                        st.subheader(f'**:green[{time_now}]**')
+                    with placeholder_4.container():
+                        st_lottie(lottie_json_auction, width=180, key = str(time_sec)+str(count_art))
+                else:
+                    with placeholder_1.container():
+                        st.markdown('##### Auction ended. Withdraw bids within:')
+                        st.subheader(f'**:red[{time_now_w}]**')
+                    placeholder_4.empty()               
+
                 time.sleep(1)
                     # time_sec-=1
             placeholder_1.empty()
@@ -327,11 +357,4 @@ if selected == '💰 Auction':
             st.balloons()
         st.markdown("#### **:red[All auction ended!]**")
         st.session_state.load_state = False
-<<<<<<< HEAD
-        # st.write(st.session_state)
-            # time.sleep(5)
-            
-=======
-        st.write(st.session_state)
-            # time.sleep(5)
->>>>>>> 757c5d5da15a43afb51182e2be24a623e7928620
+
