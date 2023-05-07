@@ -145,6 +145,9 @@ if selected == '🔨 Minting and Registration':
     if 'auction_list' not in st.session_state:
         st.session_state['auction_list'] = []
 
+    if 'my_list' not in st.session_state:
+        st.session_state['my_list'] = []
+
     st.title("Art Registration, mint your token")
     register, a_list = st.columns(2, gap='large')
     register.write("Choose an account to get started")
@@ -213,8 +216,9 @@ if selected == '🔨 Minting and Registration':
 
         auc_list=register.button("Add NFT to your auction list?")
         if auc_list:
+            my_list= st.session_state['my_list']
             my_list.append(art_dict)
-
+            st.session_state['my_list']=my_list
         for art in my_list:
             a_list.write(f"NFT {art['artwork_name']}")
         auction=a_list.button("Start new auction?")
@@ -223,7 +227,7 @@ if selected == '🔨 Minting and Registration':
             joint_list = art_list + my_list
             # art_list.append(art_dict)
             st.session_state['auction_list'] = joint_list
-
+            st.session_state['my_list'] = []
         st.markdown("---")
     # st.write(st.session_state)
     # auction=st.button("Start new auction?")
@@ -240,6 +244,12 @@ if selected == '💰 Auction':
     st.write("---")
     count_art = 0
 
+    if 'started' not in st.session_state:
+        st.session_state.started = False
+
+    if 'ended' not in st.session_state:
+        st.session_state.ended = False
+
     if 'auction_list' not in st.session_state:
         st.info("### :magenda[There are no items to auction at the momement!]")
     else:
@@ -248,6 +258,8 @@ if selected == '💰 Auction':
 
     while len(art_list)>0:
     # for art in art_list:
+        st.session_state.started = not st.session_state.started
+        st.session_state.end = not st.session_state.end
         art = art_list.pop(0)
         st.session_state['auction_list'] = art_list
         count_art +=1
@@ -292,6 +304,9 @@ if selected == '💰 Auction':
                     st.button('Withdraw Bid', key = 'withdraw'+ str(count_art))
 
         while time_sec:
+            if st.session_state.started:
+                st.session_state.started = not st.session_state.started
+                # start auction function
             time_sec-=1
             counter_auction-=1
             n1 = counter_auction / 3600
@@ -316,6 +331,10 @@ if selected == '💰 Auction':
             time_now_w = '{:02d}:{:02d}:{:02d}'.format(hours_w, mins_w, secs_w)
 
             if counter_auction>0:
+                if  st.session_state.ended:
+                    # start auction function
+                    st.session_state.ended = not st.session_state.ended
+                    
                 with placeholder_1.container():
                     st.markdown('##### Auction Count-down')
                     st.subheader(f'**:green[{time_now}]**')
