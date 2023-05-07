@@ -213,7 +213,7 @@ if selected == '🔨 Minting and Registration':
         art_dict["image"] = "https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})"
         art_dict["token_id"] = token_id
 
-        auc_list=register.button("Add NFT to your auction list?")
+        auc_list=register.checkbox("Add NFT to your auction list?")
         if auc_list:
             my_list= st.session_state['my_list']
             my_list.append(art_dict)
@@ -298,10 +298,10 @@ if selected == '💰 Auction':
                 
                 bid, withdr = st.columns(2, gap = 'large')
                 with bid:
-                    st.number_input("Bid (in ETH)", key = 'bid'+ str(count_art))
-                    st.button('Place Bid', key = 'order'+ str(count_art))
+                    bid_amunt = st.number_input("Bid (in ETH)", key = 'bid'+ str(count_art))
+                    place_bid = st.button('Place Bid', key = 'order'+ str(count_art))
                 with withdr:
-                    st.button('Withdraw Bid', key = 'withdraw'+ str(count_art))
+                    withdraw_bid = st.button('Withdraw Bid', key = 'withdraw'+ str(count_art))
 
         while time_sec:
             if st.session_state.started:
@@ -330,17 +330,16 @@ if selected == '💰 Auction':
             # mins_w, secs_w = divmod(remainder_w, 60)
             time_now_w = '{:02d}:{:02d}:{:02d}'.format(hours_w, mins_w, secs_w)
 
-            if counter_auction>0:
-                if  st.session_state.ended:
-                    # start auction function
-                    st.session_state.ended = not st.session_state.ended
-                    
+            if counter_auction>0:                   
                 with placeholder_1.container():
                     st.markdown('##### Auction Count-down')
                     st.subheader(f'**:green[{time_now}]**')
                 with placeholder_4.container():
                     st_lottie(lottie_json_auction, width=180, key = str(time_sec)+str(count_art))
             else:
+                if  st.session_state.ended:
+                    # start auction function
+                    st.session_state.ended = not st.session_state.ended
                 with placeholder_1.container():
                     st.markdown('##### Auction ended. Withdraw bids within:')
                     st.subheader(f'**:red[{time_now_w}]**')
