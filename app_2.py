@@ -262,7 +262,7 @@ if selected == '🔨 Minting and Registration':
 
 if selected == '💰 Auction':
     st.title('💰 Auction')
-    
+
     ## Load Auction Contract once using cache
     @st.cache_resource()
     def load_contract2():
@@ -331,15 +331,15 @@ if selected == '💰 Auction':
             
         with col2:
             placeholder_2= st.empty()
-            with placeholder_2.container():
-                st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
-                # st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{art['image']})", width = 400
-                st.image(image_link, width = 400)
-                #st.image(img,width=400)
-                st.write(f"Creator: {art['author']}", key = 'author'+ str(count_art))
-                st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
-                st.write(f"Highest Bid: **:blue[{highestbid}]** ETH", key = 'last_bid'+ str(count_art))
-                # st.write(f"Highest Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
+            # with placeholder_2.container():
+            #     st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
+            #     # st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{art['image']})", width = 400
+            #     st.image(image_link, width = 400)
+            #     #st.image(img,width=400)
+            #     st.write(f"Creator: {art['author']}", key = 'author'+ str(count_art))
+            #     st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
+            #     st.write(f"Highest Bid: **:blue[{highestbid}]** ETH", key = 'last_bid'+ str(count_art))
+            #     # st.write(f"Highest Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
                 # st.write(f"My name {art['init']}", key = "Initial_value"+ str(count_art))
 
         with col1:
@@ -348,31 +348,80 @@ if selected == '💰 Auction':
 
         with col3:
             placeholder_3= st.empty()
-            placeholder_5= st.empty()
-            with placeholder_3.container():
+            # bid, withdr = st.columns(2, gap = 'large')
+            # with placeholder_3.container():
+            #         my_form = st.form(key="bidder"+ str(count_art))
+            #         bidder_address=my_form.text_input(" #### Bidder's Address", key = 'bid_address'+ str(count_art))
+            #         bid_amunt = my_form.number_input("Bid (in ETH)", key = 'bid'+ str(count_art))
+            #         my_form.form_submit_button('Submit')
+            #         with bid:
+            #             place_bid = st.button('Place Bid', key = 'order'+ str(count_art))
+            #             if place_bid:
+            #                 bid_wei = w3.toWei(bid_amunt, 'ether')
+            #                 tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
+            #                 # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+            #                 highestbid = contract_2.functions.highestbid().call()
+            #                 highestbidder = contract_2.functions.highestbidder().call()
+            #         with withdr:
+            #             withdraw_bid = st.button('Withdraw Bid', key = 'withdraw'+ str(count_art))
+            #             if withdraw_bid:
+            #                 if bidder_address == highestbidder:
+            #                     st.info("You cannot withdraw as you are the **:orange[highest bidder]**!")
+            #                 tx_hash = contract_2.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
                 # st.write('#### Bid/Withdraw', key = 'bw'+ str(count_art))
-                bidder_address=st.text_input(" #### Bidder's Address", key = 'bid_address'+ str(count_art))
+                # bidder_address=st.text_input(" #### Bidder's Address", key = 'bid_address'+ str(count_art))
                 
-                bid, withdr = st.columns(2, gap = 'large')
-                with bid:
-                    bid_amunt = st.number_input("Bid (in ETH)", key = 'bid'+ str(count_art))
-                    place_bid = st.button('Place Bid', key = 'order'+ str(count_art))
-                    if place_bid:
-                        bid_wei = w3.toWei(bid_amunt, 'ether')
-                        tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
-                        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-                        highestbid = contract_2.functions.highestbid().call()
-                        highestbidder = contract_2.functions.highestbidder().call()
-                with withdr:
-                    withdraw_bid = st.button('Withdraw Bid', key = 'withdraw'+ str(count_art))
-                    if withdraw_bid:
-                        if bidder_address == highestbidder:
-                            st.info("You cannot withdraw as you are the **:orange[highest bidder]**!")
-                        tx_hash = contract_2.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
-                        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                # bid, withdr = st.columns(2, gap = 'large')
+                # with bid:
+                #     bid_amunt = st.number_input("Bid (in ETH)", key = 'bid'+ str(count_art))
+                #     place_bid = st.button('Place Bid', key = 'order'+ str(count_art))
+                #     if place_bid:
+                #         bid_wei = w3.toWei(bid_amunt, 'ether')
+                #         tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
+                #         # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                #         highestbid = contract_2.functions.highestbid().call()
+                #         highestbidder = contract_2.functions.highestbidder().call()
+                # with withdr:
+                #     withdraw_bid = st.button('Withdraw Bid', key = 'withdraw'+ str(count_art))
+                #     if withdraw_bid:
+                #         if bidder_address == highestbidder:
+                #             st.info("You cannot withdraw as you are the **:orange[highest bidder]**!")
+                #         tx_hash = contract_2.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
+                #         # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
                         
 
         while time_sec:
+            with placeholder_2.container():
+                st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
+                # st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{art['image']})", width = 400
+                st.image(image_link, width = 400)
+                #st.image(img,width=400)
+                st.write(f"Creator: {art['author']}", key = 'author'+ str(count_art))
+                st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
+                st.write(f"Highest Bid: **:blue[{highestbid}]** ETH", key = 'last_bid'+ str(count_art))
+
+            
+            with placeholder_3.container():
+                    bid, withdr = st.columns(2, gap = 'large')
+                    my_form = st.form(key="bidder"+ str(count_art))
+                    bidder_address=my_form.text_input(" #### Bidder's Address", key = 'bid_address'+ str(count_art))
+                    bid_amunt = my_form.number_input("Bid (in ETH)", key = 'bid'+ str(count_art))
+                    my_form.form_submit_button('Submit')
+                    with bid:
+                        place_bid = st.button('Place Bid', key = 'order'+ str(count_art))
+                        if place_bid:
+                            bid_wei = w3.toWei(bid_amunt, 'ether')
+                            tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
+                            # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                            highestbid = contract_2.functions.highestbid().call()
+                            highestbidder = contract_2.functions.highestbidder().call()
+                    with withdr:
+                        withdraw_bid = st.button('Withdraw Bid', key = 'withdraw'+ str(count_art))
+                        if withdraw_bid:
+                            if bidder_address == highestbidder:
+                                st.info("You cannot withdraw as you are the **:orange[highest bidder]**!")
+                            tx_hash = contract_2.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
+
             if st.session_state.started:
                 st.session_state.started = not st.session_state.started
                 # start auction function

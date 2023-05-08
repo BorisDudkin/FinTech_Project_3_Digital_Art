@@ -158,16 +158,18 @@ if selected == '🔨 Minting and Registration':
     address = register.selectbox("Select Account", options=accounts)
     register.markdown("---")
 
+    #give permission auction to trade the token:
+    tx_hash = contract.functions.setApprovalForAll(
+        address_auction,
+        True
+    ).transact({'from': address, 'gas': 1000000})
+    
     # Register New Artwork
     register.markdown("## Register New Artwork")
     artwork_name = register.text_input("Enter the name of the artwork")
     artist_name = register.text_input("Enter the artist name")
     initial_appraisal_value = register.number_input("Enter Auction Starting Bid", step=1000)
     file = register.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
-    # art_list = []
-
-    # else:
-    #     st.session_state['auction_list'] = []
 
     if register.button("Register Artwork"):
         artwork_ipfs_hash = pin_artwork(artwork_name, file)
