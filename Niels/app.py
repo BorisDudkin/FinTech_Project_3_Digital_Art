@@ -101,7 +101,7 @@ if selected == '🔨 Minting and Registration':
     contract_1 = load_contract_1()
     st.write('is contract #1 loaded?',contract_1)
 
-
+# Boris comments - this should be moved to the next page 
     @st.cache_resource()
     def load_contract_2():
 
@@ -255,18 +255,19 @@ if selected == '🔨 Minting and Registration':
     
         # TEST IF CONTRACT 2 is available 
         
-        # contract start input
+        # Boris comment: contract start input (call function ownerOf and pass tokenId) pass the seller in the list to the next page
         address_nft_reg = "0x7535550B7FB58623B1AAA06347386fB2C33E500b" # owner of the token now still hardcoded to ttest
-        token = "0x20AbEFAeb0EAf38315b55C26424f24c5128C447E" # address of NFT Register
+        # token = "0x20AbEFAeb0EAf38315b55C26424f24c5128C447E" # address of NFT Register
         #token ID is token_id, taken from above dictionary
-        
+    
+        token = contract_address_1  # Boris comment pass through the session state to the next page
         ### test if cotnract 2 (Auction file) is available:
 
         tx_hash_2 = contract_2.functions.setSeller(
             address_nft_reg,
         ).transact({'from':address_nft_reg, 'gas':1000000})
 
-        st.write('check1')
+        st.write('check1') # Boris comment - to check call seller function to get the seller
 
         tx_hash_3 = contract_2.functions.start(
             token,
