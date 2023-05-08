@@ -63,17 +63,23 @@ if selected == '🏠 Home':
 
     st.write("---")
 
+    st.subheader('About this Application')
+
+    app = "This application offrs the digital art creators a one-step full solution from minting and registering their digital art to putting the art pieces on the auction."
+    st.write(app)
+    st.write("---")
+
     st.subheader('Minting and Registration')
 
-    my_text = "The Investment Advisor application will assess an investor's risk tolerance and their capacity to absorbe risk. Based on those evaluations, two corresponding risk scores will be calculated, and associated investment portfolios will be chosen from our ETFs offering. Their performance will be assessed and compared to the Benchmark portfolio with a 40/60 bond to stock ratio. To increase clients' awareness of our new Cryptomix ETF, we will include the comparison performance of this fund as well."
+    mining = "A simple user friendly interface of the applcation allows a user to first mint and register his/her art piece. Once the NFT is minted and registered, we utilize Pinata services to store the newly created contracts in a decentralized manner."
+    st.write(mining)
+    st.write("---")
 
-    st.write(my_text)
-    st.write("---")
     st.subheader("Auction")
-    st.write("We offer our clients a tailored approach to constructing an investment portfolio based on their risk tolerance and personal cicumstances to absorbe the risk arising from the investment activities.")
+    st.write("After minting and registering their art, the creator can right away put it on the decentralized marketplace. The auction runs a certain time period within which the bidders can place their bids and, where the highest bid and the highest bidder are identified after each bid. The bid withdrawl is alsa avalibale to the bidders who are not identified as the highest bidder. The withdrawl is open during as well as some additional time aftr the auction's closing.</br>Once the auction will have ended, the NFT will have changed the ownership and be transferred to the highest bidder, if any, while the highest bid will have been transfterred to the seller.")
     st.write("---")
-    with st.expander("Fees and Charges"):
-        st.write("Assets in our funds range from High Growth and Crypto to Value Stocks and Fixed Income securities of long-term and short-term maturities. Each fund is constructed with the risk profile of an investor in mind. Our funds are non-diversified and may experience greater volatility than more diversified investments. To compensate for the limited diversification, we only offer Large Cap US equities and Domestic stocks and bonds to reduce volatility brought by small- and medium-cap equities, excluding foreign currency exposure. And yet, there will always be risks involved with ETFs' investments, resulting in the possible loss of money.")
+    # with st.expander("Fees and Charges"):
+    #     st.write("Assets in our funds range from High Growth and Crypto to Value Stocks and Fixed Income securities of long-term and short-term maturities. Each fund is constructed with the risk profile of an investor in mind. Our funds are non-diversified and may experience greater volatility than more diversified investments. To compensate for the limited diversification, we only offer Large Cap US equities and Domestic stocks and bonds to reduce volatility brought by small- and medium-cap equities, excluding foreign currency exposure. And yet, there will always be risks involved with ETFs' investments, resulting in the possible loss of money.")
 
 #######
 # NIELS
