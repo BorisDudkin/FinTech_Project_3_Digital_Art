@@ -309,7 +309,7 @@ if selected == '💰 Auction':
         counter_auction = time_auction
         time_withdraw = time_auction + 20
         time_sec = time_withdraw
-        
+        highestbid = art['last_bid']
         # Set seller for contract
         tx_hash = contract_2.functions.setSeller(
         art['seller'], # address of seller of art
@@ -329,7 +329,8 @@ if selected == '💰 Auction':
                 #st.image(img,width=400)
                 st.write(f"Creator: {art['author']}", key = 'author'+ str(count_art))
                 st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
-                st.write(f"Highest Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
+                st.write(f"Highest Bid: **:blue[{highestbid}]** ETH", key = 'last_bid'+ str(count_art))
+                # st.write(f"Highest Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
                 # st.write(f"My name {art['init']}", key = "Initial_value"+ str(count_art))
 
         with col1:
@@ -349,12 +350,16 @@ if selected == '💰 Auction':
                     place_bid = st.button('Place Bid', key = 'order'+ str(count_art))
                     if place_bid:
                         tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_amunt*1e18, 'gas': 1000000})
-                        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                        highestbid = contract_2.functions.highestbid().call()
+                        highestbidder = contract_2.functions.highestbidder().call()
                 with withdr:
                     withdraw_bid = st.button('Withdraw Bid', key = 'withdraw'+ str(count_art))
                     if withdraw_bid:
+                        if bidder_address == highestbidder:
+                            st.info("You cannot withdraw as you are the **:orange[highest bidder]**!")
                         tx_hash = contract_2.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
-                        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
                         
 
         while time_sec:
