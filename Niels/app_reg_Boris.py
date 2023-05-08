@@ -349,7 +349,8 @@ if selected == '💰 Auction':
                     bid_amunt = st.number_input("Bid (in ETH)", key = 'bid'+ str(count_art))
                     place_bid = st.button('Place Bid', key = 'order'+ str(count_art))
                     if place_bid:
-                        tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_amunt*1e18, 'gas': 1000000})
+                        bid_wei = w3.toWei(bid_amunt, 'ether')
+                        tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
                         # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
                         highestbid = contract_2.functions.highestbid().call()
                         highestbidder = contract_2.functions.highestbidder().call()
