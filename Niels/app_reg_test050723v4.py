@@ -22,6 +22,9 @@ from pinata import pin_file_to_ipfs, pin_json_to_ipfs, convert_data_to_json
 
 load_dotenv()
 
+address_register = os.getenv("SMART_CONTRACT_ADDRESS")
+address_auction = os.getenv("SMART_CONTRACT_ADDRESS_2")
+
 # Define and connect a new Web3 provider
 w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 ####
@@ -90,7 +93,7 @@ if selected == '🔨 Minting and Registration':
             contract_abi = json.load(f)
 
         # Set the contract address (this is the address of the deployed contract)
-        contract_address = os.getenv("SMART_CONTRACT_ADDRESS")
+        contract_address = address_register
 
         # Get the contract
         contract = w3.eth.contract(
@@ -102,7 +105,7 @@ if selected == '🔨 Minting and Registration':
 
     # Load the contract
     contract = load_contract()
-
+    
 # Helper functions to pin files and json to Pinata
 
     def pin_artwork(artwork_name, artwork_file):
@@ -210,7 +213,7 @@ if selected == '🔨 Minting and Registration':
         art_dict["author"] = artist_name
         art_dict["init"] = initial_appraisal_value
         art_dict["last_bid"] = 0
-        art_dict["image"] = {image_ipfs_hash}
+        art_dict["image"] = image_ipfs_hash
         art_dict["token_id"] = token_id
 
         #st.write(art_dict)
@@ -231,10 +234,10 @@ if selected == '🔨 Minting and Registration':
         #if auction:
             art_list=st.session_state['auction_list']
             joint_list = art_list + my_list
-            st.write('afterjoin',joint_list)
+            #st.write('afterjoin',joint_list)
             # art_list.append(art_dict)
             st.session_state['auction_list'] = joint_list
-            st.write('aftersessionstate',joint_list)
+            #st.write('aftersessionstate',joint_list)
             st.session_state['my_list'] = []
         st.markdown("---")
         
@@ -251,6 +254,31 @@ if selected == '🔨 Minting and Registration':
 
 if selected == '💰 Auction':
     st.title('💰 Auction')
+
+    ## Load Auction Contract once using cache
+    @st.cache_resource()
+    def load_contract2():
+
+        # Load the contract ABI
+        with open(Path('./contracts/compiled/NFT_Auction_abi.json')) as f:
+            contract_abi = json.load(f)
+
+        # Set the contract address (this is the address of the deployed contract)
+        contract_address_2 = address_auction
+
+        # Get the contract
+        contract_2 = w3.eth.contract(
+            address=contract_address_2,
+            abi=contract_abi
+        )
+
+        return contract_2
+
+    # Load the contract
+    contract_2 = load_contract2()
+
+
+
     st.write("---")
     count_art = 0
 
@@ -277,10 +305,16 @@ if selected == '💰 Auction':
         count_art +=1
 
         #set auction time to 3 min
-        time_auction = 20 # I've changed this to 20 seconds for now. 
+        time_auction = 130 # I've changed this to 20 seconds for now. 
         counter_auction = time_auction
         time_withdraw = time_auction + 20
         time_sec = time_withdraw
+        
+        # Set seller for contract
+        tx_hash = contract_2.functions.setSeller(
+        art['seller'], # address of seller of art
+        ).transact({'from': art['seller'], 'gas': 1000000})
+        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
 
         
         col1, col2, col3 = st.columns([1,2,2], gap='large')
@@ -291,7 +325,8 @@ if selected == '💰 Auction':
             placeholder_2= st.empty()
             with placeholder_2.container():
                 st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
-                #st.image(art['image'], width = 400)
+                st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{art['image']})")
+                #st.image(img,width=400)
                 st.write(f"Creator: {art['author']}", key = 'author'+ str(count_art))
                 st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
                 st.write(f"Highest Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
@@ -318,7 +353,18 @@ if selected == '💰 Auction':
         while time_sec:
             if st.session_state.started:
                 st.session_state.started = not st.session_state.started
-                # start auction function
+            
+            #st.write(address_register, art['token_id'], art['init'])
+
+            # start auction function
+            tx_hash = contract_2.functions.start(
+            address_register, # address of nft registery
+            art['token_id'], # token id is from art['token_id']
+            art['init'], # intial is from art ['initial price']
+            ).transact({'from': address_register, 'gas': 1000000})
+            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+
+
             time_sec-=1
             counter_auction-=1
             n1 = counter_auction / 3600
