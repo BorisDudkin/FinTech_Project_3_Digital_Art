@@ -174,7 +174,7 @@ if selected == '🔨 Minting and Registration':
     register.markdown("## Register New Artwork")
     artwork_name = register.text_input("Enter the name of the artwork")
     artist_name = register.text_input("Enter the artist name")
-    initial_appraisal_value = register.number_input("Enter Auction Starting Bid", step=1000)
+    initial_appraisal_value = register.number_input("Enter Auction Starting Bid in ETH", step=1)
     file = register.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
 
     if register.button("Register Artwork"):
@@ -199,8 +199,8 @@ if selected == '🔨 Minting and Registration':
 
         #register.write("You can view the pinned metadata file with the following IPFS Gateway Link")
         #register.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
-        register.write("Your tokenized artwork:")
-        register.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
+        #register.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
+
 
         #  temporary tokenId:
         event_filter = contract.events.TokenId.createFilter(fromBlock='latest')
@@ -212,9 +212,7 @@ if selected == '🔨 Minting and Registration':
 
         token_id = int(report_dictionary['args'].tokenId)
 
-        # token_id=0
-
-        # crete a dictionary with the new art work
+        # create a dictionary with the new art work
         art_dict ={}
         art_dict["seller"] = address
         art_dict["artwork_name"] = artwork_name
@@ -223,6 +221,13 @@ if selected == '🔨 Minting and Registration':
         art_dict["last_bid"] = 0
         art_dict["image"] = image_ipfs_hash
         art_dict["token_id"] = token_id
+
+        a_list.write("Your tokenized artwork:")
+        a_list.write(f"NFTs to be auctioned soon: {art_dict['artwork_name']}")
+        image_uploaded = "https://gateway.pinata.cloud/ipfs/"+art_dict['image']
+        a_list.image(image_uploaded, width = 200)
+
+        a_list.dataframe(art_dict)
 
         #st.write(art_dict)
 
@@ -237,7 +242,7 @@ if selected == '🔨 Minting and Registration':
         st.session_state['my_list']=my_list
         for art in my_list:
             #a_list.write(art)
-            a_list.write(f"NFTs to be auctioned soon: {art['artwork_name']}")
+            
         #auction=a_list.button("Start new auction?")
         #if auction:
             art_list=st.session_state['auction_list']
@@ -262,87 +267,71 @@ if selected == '🔨 Minting and Registration':
 
 if selected == '💰 Auction':
     st.title('💰 Auction')
-    new_auction=st.checkbox("Start New Auction")
-    if new_auction:
-        ## Load Auction Contract once using cache
-        @st.cache_resource()
-        def load_contract2():
+    
+    ## Load Auction Contract once using cache
+    @st.cache_resource()
+    def load_contract2():
 
-            # Load the contract ABI
-            with open(Path('./contracts/compiled/NFT_Auction_abi.json')) as f:
-                contract_abi = json.load(f)
+        # Load the contract ABI
+        with open(Path('./contracts/compiled/NFT_Auction_abi.json')) as f:
+            contract_abi = json.load(f)
 
-            # Set the contract address (this is the address of the deployed contract)
-            contract_address_2 = address_auction
+        # Set the contract address (this is the address of the deployed contract)
+        contract_address_2 = address_auction
 
-            # Get the contract
-            contract_2 = w3.eth.contract(
-                address=contract_address_2,
-                abi=contract_abi
-            )
+        # Get the contract
+        contract_2 = w3.eth.contract(
+            address=contract_address_2,
+            abi=contract_abi
+        )
 
-            return contract_2
+        return contract_2
 
-        # Load the contract
-        contract_2 = load_contract2()
+    # Load the contract
+    contract_2 = load_contract2()
 
-        st.write("---")
-        # count_art = 0
+    # define user accounts
+    accounts = w3.eth.accounts
+    
+    st.write("---")
+    count_art = 0
 
-        if 'in_progress' not in st.session_state:
-            st.session_state.in_progress = True
+    if 'started' not in st.session_state:
+        st.session_state.started = False
 
-        if 'started' not in st.session_state:
-            st.session_state.started = True
+    if 'ended' not in st.session_state:
+        st.session_state.ended = False
 
-        if 'ended' not in st.session_state:
-            st.session_state.ended = True
+    if 'auction_list' not in st.session_state:
+        st.info("### :magenda[There are no items to auction at the momement!]")
+    else:
+        art_list=st.session_state['auction_list']
 
-        if 'set_seller' not in st.session_state:
-            st.session_state.set_seller = True
-
-        if 'auction_list' not in st.session_state:
-            st.info("### :magenda[There are no items to auction at the momement!]")
-        else:
-            art_list=st.session_state['auction_list']
-            st.write(art_list)
-
-        
-        st.write(st.session_state )
-        # while len(art_list)>0:
-        # for art in art_list:
-        # st.session_state.started = not st.session_state.started
-        # #st.session_state.end = not st.session_state.end (this was the orignal)
-        # st.session_state.ended = not st.session_state.ended
-
+    
+    #st.write(st.session_state.started, st.session_state.ended)
+    while len(art_list)>0:
+    # for art in art_list:
+        st.session_state.started = not st.session_state.started
+        #st.session_state.end = not st.session_state.end (this was the orignal)
+        st.session_state.ended = not st.session_state.ended
+        art = art_list.pop(0)
+        image_link = "https://gateway.pinata.cloud/ipfs/"+art['image']
         #st.write(art)
-        
-        # count_art +=1
+        st.session_state['auction_list'] = art_list
+        count_art +=1
 
-        if st.session_state.in_progress:
-            try:
-                art = art_list.pop(0)
-            except:
-                st.stop()
-
-            st.write(art)
-            st.session_state['auction_list'] = art_list
-            image_link = "https://gateway.pinata.cloud/ipfs/"+art['image']
-            #set auction time to 3 min
-            time_auction = 125 # I've changed this to 20 seconds for now. 
-            counter_auction = time_auction
-            time_withdraw = time_auction + 20
-            time_sec = time_withdraw
-            highestbid = art['last_bid']
-            st.session_state.in_progress = not st.session_state.in_progress
+        #set auction time to 3 min
+        time_auction = 30 # I've changed this to 20 seconds for now. 
+        counter_auction = time_auction
+        time_withdraw = time_auction + 20
+        time_sec = time_withdraw
+        highestbid = art['last_bid']
         # Set seller for contract
-        if st.session_state.set_seller:
-            tx_hash = contract_2.functions.setSeller(
-            art['seller'], # address of seller of art
-            ).transact({'from': art['seller'], 'gas': 1000000})
-            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-            seller = contract_2.functions.seller().call()
-            st.session_state.set_seller = not st.session_state.set_seller
+        tx_hash = contract_2.functions.setSeller(
+        art['seller'], # address of seller of art
+        ).transact({'from': art['seller'], 'gas': 1000000})
+        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+        seller = contract_2.functions.seller().call()
         
         col1, col2, col3 = st.columns([1,2,2], gap='large')
         # my_form = st.form(key="Characteristics)")
@@ -351,13 +340,13 @@ if selected == '💰 Auction':
         with col2:
             placeholder_2= st.empty()
             with placeholder_2.container():
-                st.write(f"#### {art['artwork_name']}", key = 'name'+ str(time_sec))
+                st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
                 # st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{art['image']})", width = 400
                 st.image(image_link, width = 400)
                 #st.image(img,width=400)
-                st.write(f"Creator: {art['author']}", key = 'author'+ str(time_sec))
-                st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(time_sec))
-                st.write(f"Highest Bid: **:blue[{highestbid}]** ETH", key = 'last_bid'+ str(time_sec))
+                st.write(f"Creator: {art['author']}", key = 'author'+ str(count_art))
+                st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
+                st.write(f"Highest Bid: **:blue[{highestbid}]** ETH", key = 'last_bid'+ str(count_art))
                 # st.write(f"Highest Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
                 # st.write(f"My name {art['init']}", key = "Initial_value"+ str(count_art))
 
@@ -370,12 +359,15 @@ if selected == '💰 Auction':
             placeholder_5= st.empty()
             with placeholder_3.container():
                 # st.write('#### Bid/Withdraw', key = 'bw'+ str(count_art))
-                bidder_address=st.text_input(" #### Bidder's Address", key = 'bid_address'+ str(time_sec))
-                
+                #bidder_address=st.text_input(" #### Bidder's Address", key = 'bid_address')#+ str(count_art))
+                bidder_address = st.selectbox("Bidder's Address", options=accounts)
+
+
+
                 bid, withdr = st.columns(2, gap = 'large')
                 with bid:
-                    bid_amunt = st.number_input("Bid (in ETH)", key = 'bid'+ str(time_sec))
-                    place_bid = st.button('Place Bid', key = 'order'+ str(time_sec))
+                    bid_amunt = st.number_input("Bid (in ETH)", key = 'bid')#+ str(count_art))
+                    place_bid = st.button('Place Bid', key = 'order')#+ str(count_art))
                     if place_bid:
                         bid_wei = w3.toWei(bid_amunt, 'ether')
                         tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
@@ -383,7 +375,8 @@ if selected == '💰 Auction':
                         highestbid = contract_2.functions.highestbid().call()
                         highestbidder = contract_2.functions.highestbidder().call()
                 with withdr:
-                    withdraw_bid = st.button('Withdraw Bid', key = 'withdraw'+ str(time_sec))
+                    st.write('Withdraw Bid Option')
+                    withdraw_bid = st.button('Withdraw Bid', key = 'withdraw')#+ str(count_art))
                     if withdraw_bid:
                         if bidder_address == highestbidder:
                             st.info("You cannot withdraw as you are the **:orange[highest bidder]**!")
@@ -431,7 +424,7 @@ if selected == '💰 Auction':
                     st.markdown('##### Auction Count-down')
                     st.subheader(f'**:green[{time_now}]**')
                 with placeholder_4.container():
-                    st_lottie(lottie_json_auction, width=180, key = str(time_sec)+str(time_sec))
+                    st_lottie(lottie_json_auction, width=180, key = str(time_sec)+str(count_art))
             else:
                 if  st.session_state.ended:
                     # end auction function
@@ -449,11 +442,6 @@ if selected == '💰 Auction':
         placeholder_2.empty()
         placeholder_3.empty()
         st.balloons()
-        st.markdown("#### **:red[Auction ended!]**")
-
-        st.session_state.in_progress = not st.session_state.in_progress
-        st.session_state.started = not st.session_state.started
-        st.session_state.ended = not st.session_state.ended
-        st.session_state.set_seller = not st.session_state.set_seller
+    st.markdown("#### **:red[All auctions ended!]**")
 
 
