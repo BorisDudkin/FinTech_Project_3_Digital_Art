@@ -357,7 +357,7 @@ if selected == '💰 Auction':
                 st.image(image_link, width = 400)
                 st.write(f"Creator: {art['author']}")
                 st.write(f"Initial Value: **:blue[{art['init']}]** ETH")
-                st.write(f"Highest Bid: **:blue[{st.session_state.highestbid }]** ETH")
+                st.write(f"Highest Bid: **:blue[{st.session_state.highestbid }]** ETH", key ='highestbid')
         with col1:
             placeholder_1= st.empty()
             placeholder_4= st.empty()
@@ -438,7 +438,7 @@ if selected == '💰 Auction':
                 with placeholder_4.container():
                     st_lottie(lottie_json_auction, width=180, key = str(st.session_state.time_sec))
             else:
-                if  st.session_state.ended:
+                if st.session_state.ended:
                     # end auction function
                     st.session_state.ended = not st.session_state.ended
                     tx_hash = contract_2.functions.end().transact({'from': seller, 'gas': 1000000})
@@ -470,7 +470,7 @@ if selected == '💰 Auction':
         st.session_state.set_seller = not st.session_state.set_seller
         #testing
         # st.write(f"in_progress: {st.session_state.in_progress}")
-        st.write(f"started: {st.session_state.started}")
-        st.write(f"ended: {st.session_state.ended}")
-        st.write(f"set_seller: {st.session_state.set_seller}")
+        # st.write(f"started: {st.session_state.started}")
+        # st.write(f"ended: {st.session_state.ended}")
+        # st.write(f"set_seller: {st.session_state.set_seller}")
 
