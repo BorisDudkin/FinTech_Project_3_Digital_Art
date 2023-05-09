@@ -23,7 +23,7 @@ from pinata import pin_file_to_ipfs, pin_json_to_ipfs, convert_data_to_json
 load_dotenv()
 
 address_register = os.getenv("SMART_CONTRACT_ADDRESS")
-address_auction  = os.getenv("SMART_CONTRACT_ADDRESS_2")
+address_auction = os.getenv("SMART_CONTRACT_ADDRESS_2")
 
 # Define and connect a new Web3 provider
 w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
@@ -164,7 +164,7 @@ if selected == '🔨 Minting and Registration':
     address = register.selectbox("Select Account", options=accounts)
     register.markdown("---")
 
-    #give permission auction to trade the token:
+   #give permission auction to trade the token:
     tx_hash = contract.functions.setApprovalForAll(
         address_auction,
         True
@@ -373,13 +373,14 @@ if selected == '💰 Auction':
                     bid_amunt = st.number_input("Bid (in ETH)")
                     place_bid = st.button('Place Bid')
                     if place_bid:
-                        bid_wei = w3.toWei(bid_amunt, 'ether')
-                        tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
-                        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-                        highestbid = contract_2.functions.highestBid().call()
-                        st.session_state.highestbid  = highestbid
-                        highestbidder = contract_2.functions.highestBidder().call()
-                        st.session_state.highestbidder  = highestbidder
+                        if st.session_state.counter_auction>0: 
+                            bid_wei = w3.toWei(bid_amunt, 'ether')
+                            tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
+                            # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                            highestbid = contract_2.functions.highestBid().call()
+                            st.session_state.highestbid  = w3.fromWei(highestbid, "ether")
+                            highestbidder = contract_2.functions.highestBidder().call()
+                            st.session_state.highestbidder  = highestbidder
                 with withdr:
                     withdraw_bid = st.button('Withdraw Bid')
                     if withdraw_bid:
@@ -400,7 +401,7 @@ if selected == '💰 Auction':
                 ).transact({'from': seller, 'gas': 1000000})
                 receipt = w3.eth.waitForTransactionReceipt(tx_hash)
                 #testing
-                st.write(receipt)
+                # st.write(receipt)
                 # st.write(f"in_progress: {st.session_state.in_progress}")
                 st.write(f"started: {st.session_state.started}")
                 st.write(f"ended: {st.session_state.ended}")
@@ -444,6 +445,7 @@ if selected == '💰 Auction':
                     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
                     #testing
                     # st.write(f"in_progress: {st.session_state.in_progress}")
+                    st.write(receipt)
                     st.write(f"started: {st.session_state.started}")
                     st.write(f"ended: {st.session_state.ended}")
                     st.write(f"set_seller: {st.session_state.set_seller}")
