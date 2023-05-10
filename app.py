@@ -65,7 +65,7 @@ if selected == '🏠 Home':
 
     st.subheader('About this Application')
 
-    app = "This application offrs the digital art creators a one-step full solution from minting and registering their digital art to putting the art pieces on the auction."
+    app = "This application offers the digital art creators a one-step full solution from minting and registering their digital art to selling the art pieces on the auction."
     st.write(app)
     st.write("---")
 
@@ -76,7 +76,7 @@ if selected == '🏠 Home':
     st.write("---")
 
     st.subheader("Auction")
-    st.write("After minting and registering their art, the creator can right away put it on the decentralized marketplace. The auction runs a certain time period within which the bidders can place their bids and, where the highest bid and the highest bidder are identified after each bid. The bid withdrawl is alsa avalibale to the bidders who are not identified as the highest bidder. The withdrawl is open during as well as some additional time aftr the auction's closing.</br>Once the auction will have ended, the NFT will have changed the ownership and be transferred to the highest bidder, if any, while the highest bid will have been transfterred to the seller.")
+    st.markdown("After minting and registering their art, the creators can right away put it on the decentralized marketplace. The auction runs a certain time period, within which the bidders can place their bids and, where the highest bid and the highest bidder are identified after each bid. The withdrawl is avalibale to the bidders, who are not identified as the highest bidder. The withdrawl remains open during, as well as some additional time after the auction's closing. Once the auction will have ended, the NFT will change the ownership by being transferred to the highest bidder, while the highest bid will be transfterred to the seller.")
     st.write("---")
     # with st.expander("Fees and Charges"):
     #     st.write("Assets in our funds range from High Growth and Crypto to Value Stocks and Fixed Income securities of long-term and short-term maturities. Each fund is constructed with the risk profile of an investor in mind. Our funds are non-diversified and may experience greater volatility than more diversified investments. To compensate for the limited diversification, we only offer Large Cap US equities and Domestic stocks and bonds to reduce volatility brought by small- and medium-cap equities, excluding foreign currency exposure. And yet, there will always be risks involved with ETFs' investments, resulting in the possible loss of money.")
@@ -164,7 +164,7 @@ if selected == '🔨 Minting and Registration':
     address = register.selectbox("Select Account", options=accounts)
     register.markdown("---")
 
-    #give permission auction to trade the token:
+   #give permission auction to trade the token:
     tx_hash = contract.functions.setApprovalForAll(
         address_auction,
         True
@@ -230,6 +230,8 @@ if selected == '🔨 Minting and Registration':
 
 #        if auc_list:
 #            st.write(auc_list)
+        if 'art_d' not in st.session_state:
+            st.session_state.art_d = art_dict
 
         my_list= st.session_state['my_list']
         #st.write(my_list)
@@ -262,117 +264,144 @@ if selected == '🔨 Minting and Registration':
 
 if selected == '💰 Auction':
     st.title('💰 Auction')
-    
-    ## Load Auction Contract once using cache
-    @st.cache_resource()
-    def load_contract2():
+    accounts = w3.eth.accounts
 
-        # Load the contract ABI
-        with open(Path('./contracts/compiled/NFT_Auction_abi.json')) as f:
-            contract_abi = json.load(f)
+    new_auction=st.checkbox("Start New Auction")
+    if new_auction:
+        ## Load Auction Contract once using cache
+        @st.cache_resource()
+        def load_contract2():
 
-        # Set the contract address (this is the address of the deployed contract)
-        contract_address_2 = address_auction
+            # Load the contract ABI
+            with open(Path('./contracts/compiled/NFT_Auction_abi.json')) as f:
+                contract_abi = json.load(f)
 
-        # Get the contract
-        contract_2 = w3.eth.contract(
-            address=contract_address_2,
-            abi=contract_abi
-        )
+            # Set the contract address (this is the address of the deployed contract)
+            contract_address_2 = address_auction
 
-        return contract_2
+            # Get the contract
+            contract_2 = w3.eth.contract(
+                address=contract_address_2,
+                abi=contract_abi
+            )
 
-    # Load the contract
-    contract_2 = load_contract2()
+            return contract_2
 
-    st.write("---")
-    count_art = 0
+        # Load the contract
+        contract_2 = load_contract2()
 
-    if 'started' not in st.session_state:
-        st.session_state.started = False
+        st.write("---")
 
-    if 'ended' not in st.session_state:
-        st.session_state.ended = False
+        # set variables
+        if 'art_d' not in st.session_state:
+            st.info("### :magenda[There are no items to auction at the momement!]")
+        else:
+            art=st.session_state.art_d
 
-    if 'auction_list' not in st.session_state:
-        st.info("### :magenda[There are no items to auction at the momement!]")
-    else:
-        art_list=st.session_state['auction_list']
+        # if 'in_progress' not in st.session_state:
+        #     st.session_state.in_progress = True
 
-    
-    st.write(st.session_state.started, st.session_state.ended)
-    while len(art_list)>0:
-    # for art in art_list:
-        st.session_state.started = not st.session_state.started
-        #st.session_state.end = not st.session_state.end (this was the orignal)
-        st.session_state.ended = not st.session_state.ended
-        art = art_list.pop(0)
+        if 'started' not in st.session_state:
+            st.session_state.started = True
+
+        if 'ended' not in st.session_state:
+            st.session_state.ended = True
+
+        if 'set_seller' not in st.session_state:
+            st.session_state.set_seller = True
+
+        if 'highestbid' not in st.session_state:
+            st.session_state.highestbid = art['last_bid']
+        
+        if 'highestbidder' not in st.session_state:
+            st.session_state.highestbidder = art['seller']
+
+        if 'seller' not in st.session_state:
+            st.session_state.seller = art['seller']
+
         image_link = "https://gateway.pinata.cloud/ipfs/"+art['image']
-        #st.write(art)
-        st.session_state['auction_list'] = art_list
-        count_art +=1
-
-        #set auction time to 3 min
         time_auction = 125 # I've changed this to 20 seconds for now. 
-        counter_auction = time_auction
-        time_withdraw = time_auction + 20
+        # counter_auction = time_auction
+        time_withdraw = time_auction + 30
         time_sec = time_withdraw
-        highestbid = art['last_bid']
+        if 'time_sec' not in st.session_state:
+            st.session_state.time_sec = time_withdraw
+
+        if 'counter_auction' not in st.session_state:
+            st.session_state.counter_auction = time_auction
+        # #testing
+        # st.write(f"started: {st.session_state.started}")
+        # st.write(f"ended: {st.session_state.ended}")
+        # st.write(f"set_seller: {st.session_state.set_seller}")
+
         # Set seller for contract
-        tx_hash = contract_2.functions.setSeller(
-        art['seller'], # address of seller of art
-        ).transact({'from': art['seller'], 'gas': 1000000})
-        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        seller = contract_2.functions.seller().call()
+        if st.session_state.set_seller:
+            tx_hash = contract_2.functions.setSeller(
+            art['seller'], # address of seller of art
+            ).transact({'from': art['seller'], 'gas': 1000000})
+            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+            seller = contract_2.functions.seller().call()
+            st.session_state.set_seller = not st.session_state.set_seller
+            
+            # #testing
+            # st.write(seller)
+            # st.write(f"started: {st.session_state.started}")
+            # st.write(f"ended: {st.session_state.ended}")
+            # st.write(f"set_seller: {st.session_state.set_seller}")
         
         col1, col2, col3 = st.columns([1,2,2], gap='large')
         # my_form = st.form(key="Characteristics)")
         # with st_lottie_spinner(lottie_json_auction, height=100):
             
         with col2:
-            placeholder_2= st.empty()
-            with placeholder_2.container():
-                st.write(f"#### {art['artwork_name']}", key = 'name'+ str(count_art))
-                # st.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{art['image']})", width = 400
+            placeholder_2= st.container()
+            with placeholder_2:
+                st.write(f"#### {art['artwork_name']}")
                 st.image(image_link, width = 400)
-                #st.image(img,width=400)
-                st.write(f"Creator: {art['author']}", key = 'author'+ str(count_art))
-                st.write(f"Initial Value: **:blue[{art['init']}]** ETH", key = 'Initial_value'+ str(count_art))
-                st.write(f"Highest Bid: **:blue[{highestbid}]** ETH", key = 'last_bid'+ str(count_art))
-                # st.write(f"Highest Bid: **:blue[{art['last_bid']}]** ETH", key = 'last_bid'+ str(count_art))
-                # st.write(f"My name {art['init']}", key = "Initial_value"+ str(count_art))
-
+                st.write(f"Creator: {art['author']}")
+                st.write(f"Initial Value: **:blue[{art['init']}]** ETH")
+                # st.write(f"Highest Bid: **:blue[{st.session_state.highestbid }]** ETH", key ='highestbid')
         with col1:
             placeholder_1= st.empty()
             placeholder_4= st.empty()
 
         with col3:
-            placeholder_3= st.empty()
-            placeholder_5= st.empty()
-            with placeholder_3.container():
+            placeholder_3= st.container()
+            highestbidder_bid= st.container()
+            with placeholder_3:
                 # st.write('#### Bid/Withdraw', key = 'bw'+ str(count_art))
-                bidder_address=st.text_input(" #### Bidder's Address", key = 'bid_address'+ str(count_art))
-                
-                bid, withdr = st.columns(2, gap = 'large')
-                with bid:
-                    bid_amunt = st.number_input("Bid (in ETH)", key = 'bid'+ str(count_art))
-                    place_bid = st.button('Place Bid', key = 'order'+ str(count_art))
-                    if place_bid:
-                        bid_wei = w3.toWei(bid_amunt, 'ether')
-                        tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
-                        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-                        highestbid = contract_2.functions.highestbid().call()
-                        highestbidder = contract_2.functions.highestbidder().call()
-                with withdr:
-                    withdraw_bid = st.button('Withdraw Bid', key = 'withdraw'+ str(count_art))
-                    if withdraw_bid:
-                        if bidder_address == highestbidder:
-                            st.info("You cannot withdraw as you are the **:orange[highest bidder]**!")
-                        tx_hash = contract_2.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
-                        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-                        
+                # bidder_address=st.text_input(" #### Bidder's Address")
+                # st.text_input("Highest Bidder (address)", key ='highestbidder')
+                # st.number_input("Highest Bid (in ETH)", key ='highestbid')  
+                bidder_form = st.form(key="bidder_form")
+                bidder_address = bidder_form.selectbox(" #### Bidder's Address", options=accounts)
+                bid_amunt = bidder_form.number_input("Bid (in ETH)")
+                bidder_choice = bidder_form.radio(label ="Bid or Withdraw?", options = ['Bid', 'Withdraw'], horizontal=True)
+                submit = bidder_form.form_submit_button('Submit')
 
-        while time_sec:
+                if submit:
+                    if bidder_choice == "Bid":
+                        if st.session_state.counter_auction>0: 
+                            bid_wei = w3.toWei(bid_amunt, 'ether')
+                            tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
+                            # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                            highestbid = contract_2.functions.highestBid().call()
+                            st.session_state.highestbid  = w3.fromWei(highestbid, "ether")
+                            highestbidder = contract_2.functions.highestBidder().call()
+                            st.session_state.highestbidder  = highestbidder
+                        else:
+                            st.warning("Auction ended - cannot place bids!")
+                    else:
+                        if bidder_address == st.session_state.highestbidder :
+                            st.info("You cannot withdraw as you are the **:orange[highest bidder]**!")
+                        else:
+                            tx_hash = contract_2.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
+                
+            with highestbidder_bid:        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                st.write(f"Highest Bidder: **:green[{st.session_state.highestbidder}]**", key ='highestbidder')    
+                st.write(f"Highest Bid: **:green[{st.session_state.highestbid }]** ETH", key ='highestbid')       
+
+        while st.session_state.time_sec:
             if st.session_state.started:
                 st.session_state.started = not st.session_state.started
                 # start auction function
@@ -380,14 +409,20 @@ if selected == '💰 Auction':
                 address_register, # address of nft registery
                 art['token_id'], # token id is from art['token_id']
                 art['init'], # intial is from art ['initial price']
-                ).transact({'from': seller, 'gas': 1000000})
+                ).transact({'from': st.session_state.seller, 'gas': 1000000})
                 receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                #testing
+                # st.write(receipt)
+                # st.write(f"in_progress: {st.session_state.in_progress}")
+                # st.write(f"started: {st.session_state.started}")
+                # st.write(f"ended: {st.session_state.ended}")
+                # st.write(f"set_seller: {st.session_state.set_seller}")
 
 
-            time_sec-=1
-            counter_auction-=1
-            n1 = counter_auction / 3600
-            hours = int(counter_auction // 3600)
+            st.session_state.time_sec-=1
+            st.session_state.counter_auction -=1
+            n1 = st.session_state.counter_auction  / 3600
+            hours = int(st.session_state.counter_auction  // 3600)
             n2 = (n1-hours)*60
             mins = int(math.floor(n2))
             n3 = n2-mins
@@ -397,8 +432,8 @@ if selected == '💰 Auction':
             time_now = '{:02d}:{:02d}:{:02d}'.format(hours, mins, secs)
 
             #withdrawl remainder
-            m1 = time_sec / 3600
-            hours_w = int(time_sec // 3600)
+            m1 = st.session_state.time_sec / 3600
+            hours_w = int(st.session_state.time_sec // 3600)
             m2 = (m1-hours_w)*60
             mins_w = int(math.floor(m2))
             m3 = m2-mins_w
@@ -407,29 +442,46 @@ if selected == '💰 Auction':
             # mins_w, secs_w = divmod(remainder_w, 60)
             time_now_w = '{:02d}:{:02d}:{:02d}'.format(hours_w, mins_w, secs_w)
 
-            if counter_auction>0:                   
+            if st.session_state.counter_auction>0:                   
                 with placeholder_1.container():
                     st.markdown('##### Auction Count-down')
                     st.subheader(f'**:green[{time_now}]**')
                 with placeholder_4.container():
-                    st_lottie(lottie_json_auction, width=180, key = str(time_sec)+str(count_art))
+                    st_lottie(lottie_json_auction, width=180, key = str(st.session_state.time_sec))
             else:
-                if  st.session_state.ended:
+                if st.session_state.ended:
                     # end auction function
                     st.session_state.ended = not st.session_state.ended
-                    tx_hash = contract_2.functions.end().transact({'from': seller, 'gas': 1000000})
+                    tx_hash = contract_2.functions.end().transact({'from': st.session_state.seller, 'gas': 1000000})
                     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                    #testing
+                    # st.write(f"in_progress: {st.session_state.in_progress}")
+                    # st.write(receipt)
+                    # st.write(f"started: {st.session_state.started}")
+                    # st.write(f"ended: {st.session_state.ended}")
+                    # st.write(f"set_seller: {st.session_state.set_seller}")
+
                 with placeholder_1.container():
                     st.markdown('##### Auction ended. Withdraw bids within:')
                     st.subheader(f'**:red[{time_now_w}]**')
-                placeholder_4.empty()               
+                placeholder_4.empty()
+           
 
             time.sleep(1)
                 # time_sec-=1
-        placeholder_1.empty()
-        placeholder_2.empty()
-        placeholder_3.empty()
+        # placeholder_1.empty()
+        # placeholder_2.empty()
+        # placeholder_3.empty()
         st.balloons()
-    st.markdown("#### **:red[All auctions ended!]**")
+        st.markdown("#### **:orange[Auction closed!]**")
 
+        # st.session_state.in_progress = not st.session_state.in_progress
+        st.session_state.started = not st.session_state.started
+        st.session_state.ended = not st.session_state.ended
+        st.session_state.set_seller = not st.session_state.set_seller
+        #testing
+        # st.write(f"in_progress: {st.session_state.in_progress}")
+        # st.write(f"started: {st.session_state.started}")
+        # st.write(f"ended: {st.session_state.ended}")
+        # st.write(f"set_seller: {st.session_state.set_seller}")
 
