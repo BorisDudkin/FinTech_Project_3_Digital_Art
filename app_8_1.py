@@ -401,7 +401,7 @@ if selected == '💰 Auction':
                         if withdrawer_address == st.session_state.highestbidder :
                             st.info("You cannot withdraw as you are the **:orange[highest bidder]**!")
                         else:
-                            tx_hash = contract_2.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
+                            tx_hash = contract_2.functions.withdraw().transact({'from': withdrawer_address, 'gas': 1000000})
                 with highestbidder_bid:        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
                     st.write(f"Highest Bidder: **:pink[{st.session_state.highestbidder}]**", key ='highestbidder')    
                     st.write(f"Highest Bid: **:blue[{st.session_state.highestbid }]** ETH", key ='highestbid')       
