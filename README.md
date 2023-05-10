@@ -1,11 +1,9 @@
 # FinTech_Project_3_Digital_Art
 
-This application offrs the digital art creators a one-step full solution from minting and registering their digital art to putting the art pieces on the auction.</br>
-
-A simple user friendly interface of the applcation allows a user to first mint and register his/her art piece. Once the NFT is minted and registered, we utilize Pinata services to store the newly created contracts in a decentralized manner. </br>
-
-After minting and registering their art, the creator can right away put it on the decentralized marketplace. The auction runs a certain time period within which the bidders can place their bids and, where the highest bid and the highest bidder are identified after each bid. The bid withdrawl is alsa avalibale to the bidders who are not identified as the highest bidder. The withdrawl is open during as well as some additional time aftr the auction's closing.</br>
-Once the auction will have ended, the NFT will have changed the ownership and be transferred to the highest bidder, if any, while the highest bid will have been transfterred to the seller
+This application offers digital art creators a one-step full solution from minting and registering their digital art to putting the art pieces on the auction.</br>
+The simple user friendly interface of the applcation allows a user to first mint and register his/her art piece. Once the NFT is minted and registered, we utilize Pinata services to store the newly created contracts in a decentralized manner. </br>
+After minting and registering their art, the creator can right away put it on the decentralized marketplace. The auction runs for a certain time period within which the bidders can place their bids and, where the highest bid and the highest bidder are identified after each bid. The bid withdrawl is also available to the bidders who are not identified as the highest bidder. The withdrawl is open during as well as some additional time after the auction's closing.</br>
+Once the auction has ended, the NFT will have changed the ownership and be transferred to the highest bidder, if any, while the highest bid will have been transferred to the seller.
 
 ---
 ![Digital Art](Images/robo.jpg)
@@ -154,7 +152,7 @@ Boris Dudkin:
 
 Niels de Haan:
 - [Email](nlsdhn@gmail.com)
-- [LinkedIn]www.linkedin.com/in/nielsdehaan)
+- [LinkedIn](www.linkedin.com/in/nielsdehaan)
 ---
 
 ## License
