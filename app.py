@@ -233,22 +233,30 @@ if selected == '🔨 Minting and Registration':
         if 'art_d' not in st.session_state:
             st.session_state.art_d = art_dict
 
-        my_list= st.session_state['my_list']
-        #st.write(my_list)
-        my_list.append(art_dict)
-        st.session_state['my_list']=my_list
-        for art in my_list:
-            #a_list.write(art)
-            a_list.write(f"NFTs to be auctioned soon: {art['artwork_name']}")
-        #auction=a_list.button("Start new auction?")
-        #if auction:
-            art_list=st.session_state['auction_list']
-            joint_list = art_list + my_list
-            #st.write('afterjoin',joint_list)
-            # art_list.append(art_dict)
-            st.session_state['auction_list'] = joint_list
-            #st.write('aftersessionstate',joint_list)
-            st.session_state['my_list'] = []
+        if 'auction_NFT' not in st.session_state:
+            st.session_state.auction_NFT = False
+
+        auction_NFT=st.button("Auction your NFT?")
+        if auction_NFT:
+            st.session_state.auction_NFT = not st.session_state.auction_NFT
+
+
+        # my_list= st.session_state['my_list']
+        # #st.write(my_list)
+        # my_list.append(art_dict)
+        # st.session_state['my_list']=my_list
+        # for art in my_list:
+        #     #a_list.write(art)
+        #     a_list.write(f"NFTs to be auctioned soon: {art['artwork_name']}")
+        # #auction=a_list.button("Start new auction?")
+        # #if auction:
+        #     art_list=st.session_state['auction_list']
+        #     joint_list = art_list + my_list
+        #     #st.write('afterjoin',joint_list)
+        #     # art_list.append(art_dict)
+        #     st.session_state['auction_list'] = joint_list
+        #     #st.write('aftersessionstate',joint_list)
+        #     st.session_state['my_list'] = []
         st.markdown("---")
         
     
@@ -266,8 +274,10 @@ if selected == '💰 Auction':
     st.title('💰 Auction')
     accounts = w3.eth.accounts
 
-    new_auction=st.checkbox("Start New Auction")
-    if new_auction:
+    # new_auction=st.checkbox("Start New Auction")
+    # if new_auction:
+    if st.session_state.auction_NFT:
+        
         ## Load Auction Contract once using cache
         @st.cache_resource()
         def load_contract2():
@@ -376,7 +386,7 @@ if selected == '💰 Auction':
                 bidder_form = st.form(key="bidder_form")
                 bidder_address = bidder_form.selectbox(" #### Bidder's Address", options=accounts)
                 bid_amunt = bidder_form.number_input("Bid (in ETH)")
-                bidder_choice = bidder_form.radio(label ="Bid or Withdraw?", options = ['Bid', 'Withdraw'], horizontal=True)
+                bidder_choice = bidder_form.radio(label ="Bid or Withdraw?", options = ['Bid', 'Withdraw All'], horizontal=True)
                 submit = bidder_form.form_submit_button('Submit')
 
                 if submit:
@@ -479,6 +489,7 @@ if selected == '💰 Auction':
         st.session_state.started = not st.session_state.started
         st.session_state.ended = not st.session_state.ended
         st.session_state.set_seller = not st.session_state.set_seller
+        st.session_state.auction_NFT = not st.session_state.auction_NFT
         #testing
         # st.write(f"in_progress: {st.session_state.in_progress}")
         # st.write(f"started: {st.session_state.started}")
