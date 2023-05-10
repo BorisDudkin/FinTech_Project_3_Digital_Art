@@ -1,4 +1,5 @@
-# FinTech_Project_3_Digital_Art
+# FinTech Project 3 
+# Digital_Art
 
 This application offers digital art creators a one-step full solution from minting and registering their digital art to putting the art pieces on the auction.</br>
 The simple user friendly interface of the applcation allows a user to first mint and register his/her art piece. Once the NFT is minted and registered, we utilize Pinata services to store the newly created contracts in a decentralized manner. </br>
@@ -93,8 +94,6 @@ pip install pandas
 ```python
 # or conda
 conda install pandas
-```
-
 ```
 To install Streamlit, in Terminal run:
 
