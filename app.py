@@ -177,6 +177,8 @@ if selected == '🔨 Minting and Registration':
     initial_appraisal_value = register.number_input("Enter Auction Starting Bid", step=1000)
     file = register.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
 
+    if 'art_d' not in st.session_state:
+            st.session_state.art_d = {}
     if register.button("Register Artwork"):
         artwork_ipfs_hash = pin_artwork(artwork_name, file)
         artwork_uri = f"ipfs://{artwork_ipfs_hash}"
@@ -230,13 +232,18 @@ if selected == '🔨 Minting and Registration':
 
 #        if auc_list:
 #            st.write(auc_list)
-        if 'art_d' not in st.session_state:
-            st.session_state.art_d = art_dict
+        # if 'art_d' not in st.session_state:
+        st.session_state.art_d = art_dict
+    
+    if "load_state" not in st.session_state:
+        st.session_state.load_state = False
+    else:
+        st.session_state.load_state = False
 
-    auction=st.button("Start new auction?")
+    auction=st.button("Auction your NFT?")
     if auction:
-        if "load_state" not in st.session_state:
-            st.session_state.load_state = True
+        st.session_state.load_state = not st.session_state.load_state
+
 
 
         # my_list= st.session_state['my_list']
@@ -492,7 +499,16 @@ if selected == '💰 Auction':
         st.session_state.started = not st.session_state.started
         st.session_state.ended = not st.session_state.ended
         st.session_state.set_seller = not st.session_state.set_seller
-        st.session_state.load_state = not st.session_state.load_state
+    # st.session_state.load_state = not st.session_state.load_state
+
+    del st.session_state.started
+    del st.session_state.ended
+    del st.session_state.set_seller
+    del st.session_state.highestbid
+    del st.session_state.highestbidder
+    del st.session_state.seller
+    del st.session_state.time_sec
+    del st.session_state.counter_auction
         #testing
         # st.write(f"in_progress: {st.session_state.in_progress}")
         # st.write(f"started: {st.session_state.started}")
