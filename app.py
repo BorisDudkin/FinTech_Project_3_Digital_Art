@@ -272,11 +272,14 @@ if selected == '🔨 Minting and Registration':
 
 if selected == '💰 Auction':
     st.title('💰 Auction')
-    accounts = w3.eth.accounts
 
-    # new_auction=st.checkbox("Start New Auction")
+    if 'auction_NFT' not in st.session_state:
+            st.session_state.auction_NFT = False
+
+     # new_auction=st.checkbox("Start New Auction")
     # if new_auction:
     if st.session_state.auction_NFT:
+        accounts = w3.eth.accounts
         
         ## Load Auction Contract once using cache
         @st.cache_resource()
