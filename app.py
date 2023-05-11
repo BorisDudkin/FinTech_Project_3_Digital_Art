@@ -233,12 +233,10 @@ if selected == '🔨 Minting and Registration':
         if 'art_d' not in st.session_state:
             st.session_state.art_d = art_dict
 
-        if 'auction_NFT' not in st.session_state:
-            st.session_state.auction_NFT = False
-
-        auction_NFT=st.button("Auction your NFT?")
-        if auction_NFT:
-            st.session_state.auction_NFT = not st.session_state.auction_NFT
+    auction=st.button("Start new auction?")
+    if auction:
+        if "load_state" not in st.session_state:
+            st.session_state.load_state = True
 
 
         # my_list= st.session_state['my_list']
@@ -273,12 +271,14 @@ if selected == '🔨 Minting and Registration':
 if selected == '💰 Auction':
     st.title('💰 Auction')
 
-    if 'auction_NFT' not in st.session_state:
-            st.session_state.auction_NFT = False
-
-     # new_auction=st.checkbox("Start New Auction")
-    # if new_auction:
-    if st.session_state.auction_NFT:
+    if "load_state" not in st.session_state:
+        st.session_state.load_state = False
+    # auction=st.button("Start new auction?")
+    # if "load_state" not in st.session_state:
+    #         st.session_state.load_state = False
+    # st.write(st.session_state)
+    auction = st.session_state.load_state
+    if auction:
         accounts = w3.eth.accounts
         
         ## Load Auction Contract once using cache
@@ -492,7 +492,7 @@ if selected == '💰 Auction':
         st.session_state.started = not st.session_state.started
         st.session_state.ended = not st.session_state.ended
         st.session_state.set_seller = not st.session_state.set_seller
-        st.session_state.auction_NFT = not st.session_state.auction_NFT
+        st.session_state.load_state = not st.session_state.load_state
         #testing
         # st.write(f"in_progress: {st.session_state.in_progress}")
         # st.write(f"started: {st.session_state.started}")
