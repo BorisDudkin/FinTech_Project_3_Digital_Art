@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
+
 // create contract for registering NFTs and minting tokens during registration using ERC721 URIStorage
 contract NFTRegistery is ERC721, ERC721URIStorage{
     
@@ -12,7 +13,7 @@ contract NFTRegistery is ERC721, ERC721URIStorage{
     using Counters for Counters.Counter;
     Counters.Counter public _tokenIdCounter;
     address contractAddress;
-
+    event TokenId(uint tokenId);
     constructor() ERC721("BN Art Token", "BNAT") {}
 
     // create required input structure for NFT Name, artwork and minimum auction price. 
@@ -51,6 +52,8 @@ contract NFTRegistery is ERC721, ERC721URIStorage{
         // Add tokenID to AuctionCollection
         artCollection[tokenId] = Artwork(name, artist, initialAppraisalValue);
 
+        //emit event tokenid:
+        emit TokenId(tokenId);
         // Return registered NFT tokenId
         return tokenId;
 
@@ -88,6 +91,4 @@ contract NFTRegistery is ERC721, ERC721URIStorage{
 
 
 }
-
-
 

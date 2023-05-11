@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.4;
 
-import "./nft_register_contract.sol";
+import "./NFTRegister_2.sol";
 // import "github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/math/SafeMath.sol";
 
 //ensure we have thoe two functions available in our contract
