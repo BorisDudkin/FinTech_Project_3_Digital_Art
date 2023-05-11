@@ -22,8 +22,9 @@ from pinata import pin_file_to_ipfs, pin_json_to_ipfs, convert_data_to_json
 
 load_dotenv()
 
-address_register = os.getenv("SMART_CONTRACT_ADDRESS")
-address_auction = os.getenv("SMART_CONTRACT_ADDRESS_2")
+# get smart contract addresses from env file
+address_nft_register = os.getenv("SMART_CONTRACT_NFT_REGISTER")
+address_auction = os.getenv("SMART_CONTRACT_AUCTION")
 
 # Define and connect a new Web3 provider
 w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
@@ -39,13 +40,13 @@ def load_lottieurl(url: str):
         return None
     return r.json()
 
+# set locations for lottie files
 lottie_url = 'https://assets7.lottiefiles.com/packages/lf20_1iCXQLskUr.json'
 lottie_json = load_lottieurl(lottie_url)
-
 lottie_url_auction = 'https://assets3.lottiefiles.com/private_files/lf30_9cbxvjqt.json'
-
 lottie_json_auction = load_lottieurl(lottie_url_auction)
 
+# include lottie file into side bar
 with st.sidebar:
     st_lottie(lottie_json, height=270, key="lottie_sidebar")
     selected = option_menu(
@@ -54,18 +55,20 @@ with st.sidebar:
         default_index = 0,
     )
 
+# Home section starts here
 if selected == '🏠 Home':
 
+    # write title
     st.title('🏠 Digital Art Solutions')
     st.write("---")
     st.image('Images/sc.png',use_column_width=True)
 
-
     st.write("---")
 
+    # write introduction for the application and pages
     st.subheader('About this Application')
 
-    app = "This application offrs the digital art creators a one-step full solution from minting and registering their digital art to putting the art pieces on the auction."
+    app = "This application offers the digital art creators a one-step full solution from minting and registering their digital art to selling the art pieces on the auction."
     st.write(app)
     st.write("---")
 
@@ -76,7 +79,7 @@ if selected == '🏠 Home':
     st.write("---")
 
     st.subheader("Auction")
-    st.write("After minting and registering their art, the creator can right away put it on the decentralized marketplace. The auction runs a certain time period within which the bidders can place their bids and, where the highest bid and the highest bidder are identified after each bid. The bid withdrawl is alsa avalibale to the bidders who are not identified as the highest bidder. The withdrawl is open during as well as some additional time aftr the auction's closing.</br>Once the auction will have ended, the NFT will have changed the ownership and be transferred to the highest bidder, if any, while the highest bid will have been transfterred to the seller.")
+    st.markdown("After minting and registering their art, the creators can right away put it on the decentralized marketplace. The auction runs a certain time period, within which the bidders can place their bids and, where the highest bid and the highest bidder are identified after each bid. The withdrawl is avalibale to the bidders, who are not identified as the highest bidder. The withdrawl remains open during, as well as some additional time after the auction's closing. Once the auction will have ended, the NFT will change the ownership by being transferred to the highest bidder, while the highest bid will be transfterred to the seller.")
     st.write("---")
     # with st.expander("Fees and Charges"):
     #     st.write("Assets in our funds range from High Growth and Crypto to Value Stocks and Fixed Income securities of long-term and short-term maturities. Each fund is constructed with the risk profile of an investor in mind. Our funds are non-diversified and may experience greater volatility than more diversified investments. To compensate for the limited diversification, we only offer Large Cap US equities and Domestic stocks and bonds to reduce volatility brought by small- and medium-cap equities, excluding foreign currency exposure. And yet, there will always be risks involved with ETFs' investments, resulting in the possible loss of money.")
@@ -85,34 +88,37 @@ if selected == '🏠 Home':
 # NIELS
 #######
 
+# minting and registration page beginst here
 if selected == '🔨 Minting and Registration':
     st.title('🔨 Mint and Register Your Artwork')
     st.write("---")
     
   
-    ## Loads the contract once using cache
+    ## Loads the NFT register contract once using cache
     @st.cache_resource()
-    def load_contract():
+    # define loading contract of nft register
+    def load_contract_nft_register():
 
-        # Load the contract ABI
-        with open(Path('./contracts/compiled/NFT_registry_abi.json')) as f:
+        # Load the contract ABI of nft register
+        with open(Path('./contracts/compiled/nft_register_contract_abi.json')) as f:
             contract_abi = json.load(f)
 
-        # Set the contract address (this is the address of the deployed contract)
-        contract_address = address_register
+        # Set the contract address (this is the address of the nft register contract)
+        contract_address_nft_register = address_nft_register
 
-        # Get the contract
-        contract = w3.eth.contract(
-            address=contract_address,
+        # Get the nft register contract
+        contract_nft_register = w3.eth.contract(
+            address=contract_address_nft_register,
             abi=contract_abi
         )
 
-        return contract
+        # return the nft register contract
+        return contract_nft_register
 
-    # Load the contract
-    contract = load_contract()
+    # Load the nft register contract
+    contract_nft_register = load_contract_nft_register()
     
-# Helper functions to pin files and json to Pinata
+    # functions to pin files and json to Pinata
 
     def pin_artwork(artwork_name, artwork_file):
         # Pin the file to IPFS with Pinata
@@ -146,17 +152,19 @@ if selected == '🔨 Minting and Registration':
         return token_json_2 
 
 ### To be removed in next version
-    def pin_appraisal_report(report_content):
-        json_report = convert_data_to_json(report_content)
-        report_ipfs_hash = pin_json_to_ipfs(json_report)
-        return report_ipfs_hash
-###
-    if 'auction_list' not in st.session_state:
-        st.session_state['auction_list'] = []
+#    def pin_appraisal_report(report_content):
+#        json_report = convert_data_to_json(report_content)
+#        report_ipfs_hash = pin_json_to_ipfs(json_report)
+#        return report_ipfs_hash
 
-    if 'my_list' not in st.session_state:
-        st.session_state['my_list'] = []
+    ### set session states for auctionlist
+#    if 'auction_list' not in st.session_state:
+#        st.session_state['auction_list'] = []
 
+#    if 'my_list' not in st.session_state:
+#        st.session_state['my_list'] = []
+
+    # start of uploading artwork and minting token
     st.title("Art Registration, mint your token")
     register, a_list = st.columns(2, gap='large')
     register.write("Choose an account to get started")
@@ -164,8 +172,8 @@ if selected == '🔨 Minting and Registration':
     address = register.selectbox("Select Account", options=accounts)
     register.markdown("---")
 
-   #give permission auction to trade the token:
-    tx_hash = contract.functions.setApprovalForAll(
+   # give auction to permission trade the token during auction:
+    tx_hash = contract_nft_register.functions.setApprovalForAll(
         address_auction,
         True
     ).transact({'from': address, 'gas': 1000000})
@@ -177,16 +185,18 @@ if selected == '🔨 Minting and Registration':
     initial_appraisal_value = register.number_input("Enter Auction Starting Bid", step=1000)
     file = register.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
 
+    # create art_d session state
+    if 'art_d' not in st.session_state:
+            st.session_state.art_d = {}
+    
+    # create register artwork button if pressed continue
     if register.button("Register Artwork"):
         artwork_ipfs_hash = pin_artwork(artwork_name, file)
         artwork_uri = f"ipfs://{artwork_ipfs_hash}"
         image_ipfs_hash = pin_image(file)
 
-        # create token ID for this contract
-        #token_id = contract.functions.registerArtwork(tokenId).call()
-
-
-        tx_hash = contract.functions.registerArtwork(
+        # run smart contract function to Register Artwork
+        tx_hash = contract_nft_register.functions.registerArtwork(
             address,
             artwork_name,
             artist_name,
@@ -197,28 +207,19 @@ if selected == '🔨 Minting and Registration':
         # st.write("Transaction receipt mined:")
         # st.write(dict(receipt))
         register.markdown("---")
-        #register.write("You can view the pinned metadata file with the following IPFS Gateway Link")
-        #register.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
-        register.write("Your tokenized artwork:")
-        register.markdown(f"![Artwork Link](https://gateway.pinata.cloud/ipfs/{image_ipfs_hash})")
 
-        #  temporary tokenId:
-        event_filter = contract.events.TokenId.createFilter(fromBlock='latest')
+        #  Call tokenid event to incorporate tokenId:
+        event_filter = contract_nft_register.events.TokenId.createFilter(fromBlock='latest')
         reports = event_filter.get_all_entries()
         if reports:
             for report in reports:
                 report_dictionary = dict(report)
         # st.write(int(report_dictionary['args'].tokenId))
 
+        # set token id variable
         token_id = int(report_dictionary['args'].tokenId)
 
-        st.write('tokenID', token_id)
-        # token_id=0
-
-        ownerof_token = contract.functions.ownerOf(token_id).call()
-        st.write('Owner of token before Auction (line 219)', ownerof_token)
-
-        # crete a dictionary with the new art work
+        # create a dictionary with the new art work
         art_dict ={}
         art_dict["seller"] = address
         art_dict["artwork_name"] = artwork_name
@@ -228,83 +229,77 @@ if selected == '🔨 Minting and Registration':
         art_dict["image"] = image_ipfs_hash
         art_dict["token_id"] = token_id
 
-        #st.write(art_dict)
+        # if 'art_d' not in st.session_state:
+        st.session_state.art_d = art_dict
 
-        #auc_list=register.checkbox("Add NFT to your auction list?")
+        # create an overview of the recently registered and minted artwork    
+        a_list.write(f"NFTs Ready for Auction")
+        # define preview of artwork
+        image_uploaded = "https://gateway.pinata.cloud/ipfs/"+art_dict['image']
+        # show preview of artwork
+        a_list.image(image_uploaded, width = 300)
+        # write features of the artwork just minted
+        a_list.write(f"Artwork: {art_dict['artwork_name']}")
+        a_list.write(f"Artist: {art_dict['author']}")
+        a_list.write(f"Owner: {art_dict['seller']}")
+        a_list.write(f"token ID: {art_dict['token_id']}")    
 
-#        if auc_list:
-#            st.write(auc_list)
-        if 'art_d' not in st.session_state:
-            st.session_state.art_d = art_dict
+    # create load_state session state
+    if "load_state" not in st.session_state:
+        st.session_state.load_state = False
+    else:
+        st.session_state.load_state = False
 
-        my_list= st.session_state['my_list']
-        #st.write(my_list)
-        my_list.append(art_dict)
-        st.session_state['my_list']=my_list
-        for art in my_list:
-            #a_list.write(art)
-            a_list.write(f"NFTs to be auctioned soon: {art['artwork_name']}")
-        #auction=a_list.button("Start new auction?")
-        #if auction:
-            art_list=st.session_state['auction_list']
-            joint_list = art_list + my_list
-            #st.write('afterjoin',joint_list)
-            # art_list.append(art_dict)
-            st.session_state['auction_list'] = joint_list
-            #st.write('aftersessionstate',joint_list)
-            st.session_state['my_list'] = []
+    # create button for auctioning the registered NFT
+    auction=a_list.button("Auction your NFT?")
+    if auction:
+        st.session_state.load_state = not st.session_state.load_state
+
         st.markdown("---")
         
-    
-    # st.write(st.session_state)
-    # auction=st.button("Start new auction?")
-    # st.write(auction)
-    # if "load_state" not in st.session_state:
-    #     st.session_state.load_state = False
-    # if auction:
-    #     st.session_state.load_state = True
-        # st.write(st.session_state)
-    # st.write(st.session_state)
-
+# Auction page begins here
 if selected == '💰 Auction':
     st.title('💰 Auction')
-    accounts = w3.eth.accounts
 
-    new_auction=st.checkbox("Start New Auction")
-    if new_auction:
+    # check load_state
+    if "load_state" not in st.session_state:
+        st.session_state.load_state = False
 
+    # if load state ready then proceed to auction
+    auction = st.session_state.load_state
+    if auction:
+        accounts = w3.eth.accounts
+        
         ## Load Auction Contract once using cache
         @st.cache_resource()
-        def load_contract2():
+        def load_contract_auction():
 
-            # Load the contract ABI
-            with open(Path('./contracts/compiled/NFT_Auction_abi.json')) as f:
-                contract_abi = json.load(f)
+            # Load the auction contract ABI
+            with open(Path('./contracts/compiled/auction_deployer_contract_abi.json')) as f:
+                contract_abi_auction = json.load(f)
 
-            # Set the contract address (this is the address of the deployed contract)
-            contract_address_2 = address_auction
+            # Set the auction contract address (this is the address of the deployed contract)
+            contract_address_auction = address_auction
 
-            # Get the contract
-            contract_2 = w3.eth.contract(
-                address=contract_address_2,
-                abi=contract_abi
+            # Get the auction contract
+            contract_auction = w3.eth.contract(
+                address=contract_address_auction,
+                abi=contract_abi_auction
             )
 
-            return contract_2
+            # return auction contract
+            return contract_auction
 
-        # Load the contract
-        contract_2 = load_contract2()
-        
+        # Load the auction contract
+        contract_auction = load_contract_auction()
+
         st.write("---")
 
-        # set variables
+        # set session state variables
         if 'art_d' not in st.session_state:
             st.info("### :magenda[There are no items to auction at the momement!]")
         else:
             art=st.session_state.art_d
-
-        # if 'in_progress' not in st.session_state:
-        #     st.session_state.in_progress = True
 
         if 'started' not in st.session_state:
             st.session_state.started = True
@@ -321,41 +316,47 @@ if selected == '💰 Auction':
         if 'highestbidder' not in st.session_state:
             st.session_state.highestbidder = art['seller']
 
+        if 'seller' not in st.session_state:
+            st.session_state.seller = art['seller']
+
+        # present artwork on auction
         image_link = "https://gateway.pinata.cloud/ipfs/"+art['image']
-        time_auction = 60 # I've changed this to 20 seconds for now. 
-        # counter_auction = time_auction
-        time_withdraw = time_auction + 20
+        # create timer of auction
+        time_auction = 125 
+        # create a timeframe to withdraw 
+        time_withdraw = time_auction + 30
         time_sec = time_withdraw
         if 'time_sec' not in st.session_state:
             st.session_state.time_sec = time_withdraw
 
         if 'counter_auction' not in st.session_state:
             st.session_state.counter_auction = time_auction
-        #testing
-        st.write(f"started: {st.session_state.started}")
-        st.write(f"ended: {st.session_state.ended}")
-        st.write(f"set_seller: {st.session_state.set_seller}")
+        # #testing
+        # st.write(f"started: {st.session_state.started}")
+        # st.write(f"ended: {st.session_state.ended}")
+        # st.write(f"set_seller: {st.session_state.set_seller}")
 
         # Set seller for contract
         if st.session_state.set_seller:
-            tx_hash = contract_2.functions.setSeller(
+            tx_hash = contract_auction.functions.setSeller(
             art['seller'], # address of seller of art
             ).transact({'from': art['seller'], 'gas': 1000000})
             receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-            seller = contract_2.functions.seller().call()
-            st.write('Set Seller At Start of Auction (line345) ',seller)
+            seller = contract_auction.functions.seller().call()
             st.session_state.set_seller = not st.session_state.set_seller
-
-            #testing
-            #st.write(seller)
-            st.write(f"started: {st.session_state.started}")
-            st.write(f"ended: {st.session_state.ended}")
-            st.write(f"set_seller: {st.session_state.set_seller}")
+            
+            # #testing
+            # st.write(seller)
+            # st.write(f"started: {st.session_state.started}")
+            # st.write(f"ended: {st.session_state.ended}")
+            # st.write(f"set_seller: {st.session_state.set_seller}")
         
+        # create 3 columns for auction page to display artwork and bid/withdraw option and accounts
         col1, col2, col3 = st.columns([1,2,2], gap='large')
         # my_form = st.form(key="Characteristics)")
         # with st_lottie_spinner(lottie_json_auction, height=100):
-            
+        
+        # create column 2 to display artwork and creator and inital value    
         with col2:
             placeholder_2= st.container()
             with placeholder_2:
@@ -363,85 +364,75 @@ if selected == '💰 Auction':
                 st.image(image_link, width = 400)
                 st.write(f"Creator: {art['author']}")
                 st.write(f"Initial Value: **:blue[{art['init']}]** ETH")
-                st.write(f"Highest Bid: **:blue[{st.session_state.highestbid }]** ETH", key ='highestbid')
+                # st.write(f"Highest Bid: **:blue[{st.session_state.highestbid }]** ETH", key ='highestbid')
+        # leave column1 empty 
         with col1:
             placeholder_1= st.empty()
             placeholder_4= st.empty()
 
+        # create column 3 with form to bid / withdraw and selection of addresses
         with col3:
             placeholder_3= st.container()
+            highestbidder_bid= st.container()
             with placeholder_3:
                 # st.write('#### Bid/Withdraw', key = 'bw'+ str(count_art))
                 # bidder_address=st.text_input(" #### Bidder's Address")
-                bidder_address = st.selectbox(" #### Bidder's Address", options=accounts)
-                bid, withdr = st.columns(2, gap = 'large')
-                with bid:
-                    bid_amunt = st.number_input("Bid (in ETH)")
-                    place_bid = st.button('Place Bid')
-                    if place_bid:
+                # st.text_input("Highest Bidder (address)", key ='highestbidder')
+                # st.number_input("Highest Bid (in ETH)", key ='highestbid')  
+                bidder_form = st.form(key="bidder_form")
+                bidder_address = bidder_form.selectbox(" #### Bidder's Address", options=accounts)
+                bid_amunt = bidder_form.number_input("Bid (in ETH)")
+                bidder_choice = bidder_form.radio(label ="Bid or Withdraw?", options = ['Bid', 'Withdraw All'], horizontal=True)
+                submit = bidder_form.form_submit_button('Submit')
+
+                # define what happens when bid is placed
+                if submit:
+                    if bidder_choice == "Bid":
                         if st.session_state.counter_auction>0: 
                             bid_wei = w3.toWei(bid_amunt, 'ether')
-                            tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
+                            # call bid function from auction contract
+                            tx_hash = contract_auction.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
                             # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-                        
-                            #  call bid Log
-                            event_filter = contract_2.events.Bid.createFilter(fromBlock='latest')
-                            reports = event_filter.get_all_entries()
-                            if reports:
-                                for report in reports:
-                                    report_dictionary_bid = dict(report)
-                                
-                            bid_log_bid = int(report_dictionary_bid['args'].highestBidder)
-                            bid_log_hbid = int(report_dictionary_bid['args'].highestBid)
-                            
-                            # write highest bidder and highest bid from log
-                            st.write('HighestBidder during Auction (line 398)',bid_log_bid)
-                            st.write('HighestBid during Auction (line 399)',bid_log_hbid)
-
-                            highestbid = contract_2.functions.highestBid().call()
+                            # call highest bid function from auction contract
+                            highestbid = contract_auction.functions.highestBid().call()
                             st.session_state.highestbid  = w3.fromWei(highestbid, "ether")
-                            highestbidder = contract_2.functions.highestBidder().call()
+                            highestbidder = contract_auction.functions.highestBidder().call()
                             st.session_state.highestbidder  = highestbidder
-                with withdr:
-                    withdraw_bid = st.button('Withdraw Bid')
-                    if withdraw_bid:
+                        else:
+                            # create warning that auction ended so no bids can be placed anymore
+                            st.warning("Auction ended - cannot place bids!")
+                    else:
+                        # make sure highest bidder cannot withdraw
                         if bidder_address == st.session_state.highestbidder :
                             st.info("You cannot withdraw as you are the **:orange[highest bidder]**!")
-                        tx_hash = contract_2.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
-                        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-                        
+                        # else bidder can withdrawfrom auction
+                        else:
+                            tx_hash = contract_auction.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
+            # show highest bidder                 
+            with highestbidder_bid:        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                st.write(f"Highest Bidder: **:green[{st.session_state.highestbidder}]**", key ='highestbidder')    
+                st.write(f"Highest Bid: **:green[{st.session_state.highestbid }]** ETH", key ='highestbid')       
 
+        # when time starts running call start function once 
         while st.session_state.time_sec:
             if st.session_state.started:
                 st.session_state.started = not st.session_state.started
+                
                 # start auction function
-                tx_hash = contract_2.functions.start(
-                address_register, # address of nft registery
+                tx_hash = contract_auction.functions.start(
+                address_nft_register, # address of nft registery
                 art['token_id'], # token id is from art['token_id']
                 art['init'], # intial is from art ['initial price']
-                ).transact({'from': seller, 'gas': 1000000})
+                ).transact({'from': st.session_state.seller, 'gas': 1000000})
                 receipt = w3.eth.waitForTransactionReceipt(tx_hash)
                 #testing
-
-                #  call start Log
-                event_filter = contract_2.events.Start.createFilter(fromBlock='latest')
-                reports = event_filter.get_all_entries()
-                if reports:
-                    for report in reports:
-                        report_dictionary_start = dict(report)
-                
-                st.write('Address During Auction (line433)', (report_dictionary_start['address']))
-                #end_log_bid = int(report_dictionary['args'].highestBidder)
-                
-
-
                 # st.write(receipt)
                 # st.write(f"in_progress: {st.session_state.in_progress}")
-                st.write(f"started: {st.session_state.started}")
-                st.write(f"ended: {st.session_state.ended}")
-                st.write(f"set_seller: {st.session_state.set_seller}")
+                # st.write(f"started: {st.session_state.started}")
+                # st.write(f"ended: {st.session_state.ended}")
+                # st.write(f"set_seller: {st.session_state.set_seller}")
 
-
+            # create countdown and timer
             st.session_state.time_sec-=1
             st.session_state.counter_auction -=1
             n1 = st.session_state.counter_auction  / 3600
@@ -465,6 +456,7 @@ if selected == '💰 Auction':
             # mins_w, secs_w = divmod(remainder_w, 60)
             time_now_w = '{:02d}:{:02d}:{:02d}'.format(hours_w, mins_w, secs_w)
 
+            # if counter still above 1 run the counter down
             if st.session_state.counter_auction>0:                   
                 with placeholder_1.container():
                     st.markdown('##### Auction Count-down')
@@ -472,36 +464,20 @@ if selected == '💰 Auction':
                 with placeholder_4.container():
                     st_lottie(lottie_json_auction, width=180, key = str(st.session_state.time_sec))
             else:
+                # when auction is over call end function of auction contract
                 if st.session_state.ended:
                     # end auction function
                     st.session_state.ended = not st.session_state.ended
-                    tx_hash = contract_2.functions.end().transact({'from': seller, 'gas': 1000000})
+                    tx_hash = contract_auction.functions.end().transact({'from': st.session_state.seller, 'gas': 1000000})
                     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
                     #testing
                     # st.write(f"in_progress: {st.session_state.in_progress}")
-                    
-                    # print end receipt
-                    #st.write(receipt)
+                    # st.write(receipt)
+                    # st.write(f"started: {st.session_state.started}")
+                    # st.write(f"ended: {st.session_state.ended}")
+                    # st.write(f"set_seller: {st.session_state.set_seller}")
 
-                    #  call End Log
-                    event_filter = contract_2.events.End.createFilter(fromBlock='latest')
-                    reports = event_filter.get_all_entries()
-                    if reports:
-                        for report in reports:
-                            report_dictionary = dict(report)
-                        
-                    end_log_bid = (report_dictionary['args'].highestBidder)
-                    end_log_hbid = (report_dictionary['args'].highestBid)
-
-                    # write highest bidder and highest bid from log
-                    st.write('HighestBidder after END event (line497)',end_log_bid)
-                    st.write('HighestBidder after END event (line498)',end_log_hbid)
-
-                    # write session states
-                    st.write(f"started: {st.session_state.started}")
-                    st.write(f"ended: {st.session_state.ended}")
-                    st.write(f"set_seller: {st.session_state.set_seller}")
-
+                # show that auction ened
                 with placeholder_1.container():
                     st.markdown('##### Auction ended. Withdraw bids within:')
                     st.subheader(f'**:red[{time_now_w}]**')
@@ -514,12 +490,22 @@ if selected == '💰 Auction':
         # placeholder_2.empty()
         # placeholder_3.empty()
         st.balloons()
-        st.markdown("#### **:red[Auction ended!]**")
+        st.markdown("#### **:orange[Auction closed!]**")
 
         # st.session_state.in_progress = not st.session_state.in_progress
         st.session_state.started = not st.session_state.started
         st.session_state.ended = not st.session_state.ended
         st.session_state.set_seller = not st.session_state.set_seller
+    # st.session_state.load_state = not st.session_state.load_state
+    # remove current session states
+    del st.session_state.started
+    del st.session_state.ended
+    del st.session_state.set_seller
+    del st.session_state.highestbid
+    del st.session_state.highestbidder
+    del st.session_state.seller
+    del st.session_state.time_sec
+    del st.session_state.counter_auction
         #testing
         # st.write(f"in_progress: {st.session_state.in_progress}")
         # st.write(f"started: {st.session_state.started}")

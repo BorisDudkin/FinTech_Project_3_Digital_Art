@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.6;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+
 
 // create contract for registering NFTs and minting tokens during registration using ERC721 URIStorage
 contract NFTRegistery is ERC721, ERC721URIStorage{
@@ -12,7 +13,7 @@ contract NFTRegistery is ERC721, ERC721URIStorage{
     using Counters for Counters.Counter;
     Counters.Counter public _tokenIdCounter;
     address contractAddress;
-
+    event TokenId(uint tokenId);
     constructor() ERC721("BN Art Token", "BNAT") {}
 
     // create required input structure for NFT Name, artwork and minimum auction price. 
@@ -25,7 +26,7 @@ contract NFTRegistery is ERC721, ERC721URIStorage{
     // map NFT structure to NFTMetaData
     mapping(uint256 => Artwork) public artCollection;
 
-    // can be removed no need for appraisal. 
+    // could be removed no need for appraisal. 
     event Appraisal(uint256 tokenId, uint256 appraisalValue, string reportURI);
 
     // create register NFT function including minting and token supply count
@@ -51,17 +52,20 @@ contract NFTRegistery is ERC721, ERC721URIStorage{
         // Add tokenID to AuctionCollection
         artCollection[tokenId] = Artwork(name, artist, initialAppraisalValue);
 
+        //emit event tokenid:
+        emit TokenId(tokenId);
         // Return registered NFT tokenId
         return tokenId;
 
     }
 
-    // The following functions are overrides required by Solidity.
+    // required by Solidity in 0.8.4
 
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
     }
 
+    // create token uri funciton to get token URI
     function tokenURI(uint256 tokenId)
         public
         view
@@ -70,10 +74,9 @@ contract NFTRegistery is ERC721, ERC721URIStorage{
     {
         return super.tokenURI(tokenId);
     }
-
+       
         
-        
-    // below can be removed, no need for new appraisal
+    // below could be removed, no need for new appraisal
     function newAppraisal(
         uint256 tokenId,
         uint256 newAppraisalValue,
@@ -88,6 +91,4 @@ contract NFTRegistery is ERC721, ERC721URIStorage{
 
 
 }
-
-
 

@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.4;
 
-import "./NftRegister_2.sol";
+import "./nft_register_contract.sol";
 // import "github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/math/SafeMath.sol";
 
 //ensure we have thoe two functions available in our contract
@@ -101,7 +101,7 @@ contract Auction {
         bids[msg.sender] += msg.value;
         // set the new highest bid and bidder:
         if(bids[msg.sender] > highestBid) {
-            highestBid = msg.value;
+            highestBid = bids[msg.sender];
             highestBidder = msg.sender;
         }
         // emitting Bid event:
