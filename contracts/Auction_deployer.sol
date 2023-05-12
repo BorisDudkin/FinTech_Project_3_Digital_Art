@@ -96,6 +96,8 @@ contract Auction {
         require(block.timestamp < endAt, "Auction ended");
         // the bid has to be higher than the latest bid:
         require(msg.value < msg.sender.balance, "The bid has to be higher than the highest bid to be accepted");
+        // seller cannot be a bidder to prevent price manipulation
+        require(msg.sender != payable(seller), "Seller cannot place a bid");
 
         //new balance of the bidder:
         bids[msg.sender] += msg.value;
