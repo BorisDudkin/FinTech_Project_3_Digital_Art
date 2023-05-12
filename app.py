@@ -308,7 +308,7 @@ if selected == '💰 Auction':
         # create timer of auction
         time_auction = 125 
         # create a timeframe to withdraw 
-        time_withdraw = time_auction + 30
+        time_withdraw = time_auction + 45
         time_sec = time_withdraw
         if 'time_sec' not in st.session_state:
             st.session_state.time_sec = time_withdraw
