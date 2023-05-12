@@ -362,44 +362,23 @@ if selected == '💰 Auction':
                     if bidder_choice == "Bid":
                         if bidder_address == st.session_state.seller:
                             st.error("**:orange[the Seller]** is not allowed to place bids!", icon ="⛔")
-                        if st.session_state.counter_auction>0:
-                            bid_wei = w3.toWei(bid_amunt, 'ether')
-                            tx_hash = contract_2.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
-                            # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-                            highestbid = contract_2.functions.highestBid().call()
-                            st.session_state.highestbid  = w3.fromWei(highestbid, "ether")
-                            highestbidder = contract_2.functions.highestBidder().call()
-                            st.session_state.highestbidder  = highestbidder
-                        else:
-                            st.warning("Auction ended - cannot place bids!", icon="⚠️")
+                        else: 
+                            if st.session_state.counter_auction>0:
+                                bid_wei = w3.toWei(bid_amunt, 'ether')
+                                tx_hash = contract_auction.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
+                                # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                                highestbid = contract_auction.functions.highestBid().call()
+                                st.session_state.highestbid  = w3.fromWei(highestbid, "ether")
+                                highestbidder = contract_auction.functions.highestBidder().call()
+                                st.session_state.highestbidder  = highestbidder
+                            else:
+                                st.warning("Auction ended - cannot place bids!", icon="⚠️")
                     else:
                         if bidder_address == st.session_state.highestbidder:
                             st.info("You cannot withdraw as you are the **:orange[highest bidder]**!", icon = "❌")
                         else:
-                            tx_hash = contract_2.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
-                # if submit:
-                #     if bidder_choice == "Bid":
-                #         if st.session_state.counter_auction>0: 
-                #             bid_wei = w3.toWei(bid_amunt, 'ether')
-                #             # call bid function from auction contract
-                #             tx_hash = contract_auction.functions.bid().transact({'from': bidder_address,'value': bid_wei, 'gas': 1000000})
-                #             # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-                #             # call highest bid function from auction contract
-                #             highestbid = contract_auction.functions.highestBid().call()
-                #             st.session_state.highestbid  = w3.fromWei(highestbid, "ether")
-                #             highestbidder = contract_auction.functions.highestBidder().call()
-                #             st.session_state.highestbidder  = highestbidder
-                #         else:
-                #             # create warning that auction ended so no bids can be placed anymore
-                #             st.warning("Auction ended - cannot place bids!")
-                #     else:
-                #         # make sure highest bidder cannot withdraw
-                #         if bidder_address == st.session_state.highestbidder :
-                #             st.info("You cannot withdraw as you are the **:orange[highest bidder]**!")
-                #         # else bidder can withdrawfrom auction
-                #         else:
-                #             tx_hash = contract_auction.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
-            # show highest bidder                 
+                            tx_hash = contract_auction.functions.withdraw().transact({'from': bidder_address, 'gas': 1000000})
+
             with highestbidder_bid:        # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
                 st.write(f"Highest Bidder: **:green[{st.session_state.highestbidder}]**", key ='highestbidder')    
                 st.write(f"Highest Bid: **:green[{st.session_state.highestbid }]** ETH", key ='highestbid')       
@@ -474,13 +453,13 @@ if selected == '💰 Auction':
         st.session_state.set_seller = not st.session_state.set_seller
 
     # remove current session states
-    del st.session_state.started
-    del st.session_state.ended
-    del st.session_state.set_seller
-    del st.session_state.highestbid
-    del st.session_state.highestbidder
-    del st.session_state.seller
-    del st.session_state.time_sec
-    del st.session_state.counter_auction
+        del st.session_state.started
+        del st.session_state.ended
+        del st.session_state.set_seller
+        del st.session_state.highestbid
+        del st.session_state.highestbidder
+        del st.session_state.seller
+        del st.session_state.time_sec
+        del st.session_state.counter_auction
 
 
