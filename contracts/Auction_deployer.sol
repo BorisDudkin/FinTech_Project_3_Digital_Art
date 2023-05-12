@@ -95,7 +95,7 @@ contract Auction {
         // make sure the auction is not finalized before the agreed time:
         require(block.timestamp < endAt, "Auction ended");
         // the bid has to be higher than the latest bid:
-        require(msg.value < msg.sender.balance, "The bid has to be higher than the highest bid to be accepted");
+        require(msg.value < msg.sender.balance, "Insufficient bidder balance for placed bid");
         // seller cannot be a bidder to prevent price manipulation
         require(msg.sender != payable(seller), "Seller cannot place a bid");
 
