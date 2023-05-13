@@ -23,8 +23,8 @@ Once the auction has ended, the NFT will have changed the ownership and be trans
 ## Technologies
 ```
 Python 3.9
-Remix IDE
 Solidity
+Remix IDE
 Ganache
 Pinata IPFS Storage
 ```
@@ -137,9 +137,42 @@ conda install -c anaconda requests
 conda install -c jmcmurray json
 ```
 
+Once all the libraries are installed please Install following software program:
+
+* Ganache:
+Ganache is a program that allows you to quickly set up a local blockchain, which you can use to test and develop smart contracts.
+- download the latest version of Ganache and then create a Ganache workspace throught this link [Ganache download page](https://trufflesuite.com/ganache/)
+- Once installed please open Ganache and create a workspace by clicking Quickstart Ethereum. 
+[Ganache_Quickstart](Images/Ganache_quickstart.jpg)
+
+
+* Remix IDE
+Remix IDE is used to build and test smart contracts createe with Solidity. For this project you can use the web version of [REMIX IDE](https://remix.ethereum.org/)
+- Open Remix IDE by clicking the link
+- Select solidity in the featured plugins area
+[Remix_Solidity](Images/Remix_solidity.jpg)
 
 
 
+
+
+
+* Pinata
+Storing data on a chain is expensive. IPFS is a technology that can be used to store and retrieve files from a decentralized system. IPFS distributes each file across multiple nodes in its own network. It breaks down the file into pieces of data and then distributes the pieces across multiple nodes. Smart contracts and dApps can store and retrieve their files directly from the nodes that have the data pieces. This means that they store and access their data by using a decentralized technology—without the expense of storing that data on the chain.
+For our dApp We utilized IPFS services through Pinata. 
+
+- Go to Pinata website [Pinata Website](https://www.pinata.cloud/)
+- Sign up for a free account.
+- Log into the pinata dashboard. 
+- Select API keys 
+![Pinata_API](Images/Pinata_API.jpg)
+- Open Sample.env file in the cloned folder and input the Pinata API KEY and SECRET API KEY in the file and save the file. 
+
+
+
+
+
+Copy the provided SAMPLE.env file to a new file named .env, and then add the missing data to the environment variables.
 
 ## Contributors
 
