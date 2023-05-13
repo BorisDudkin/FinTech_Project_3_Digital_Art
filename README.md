@@ -143,14 +143,14 @@ Once all the libraries are installed please Install following software program:
 Ganache is a program that allows you to quickly set up a local blockchain, which you can use to test and develop smart contracts.
 - download the latest version of Ganache and then create a Ganache workspace throught this link [Ganache download page](https://trufflesuite.com/ganache/)
 - Once installed please open Ganache and create a workspace by clicking Quickstart Ethereum. 
-[Ganache_Quickstart](Images/Ganache_quickstart.jpg)
+![Ganache_Quickstart](Images/Ganache_quickstart.jpg)
 
 
 * Remix IDE
 Remix IDE is used to build and test smart contracts createe with Solidity. For this project you can use the web version of [REMIX IDE](https://remix.ethereum.org/)
 - Open Remix IDE by clicking the link
 - Select solidity in the featured plugins area
-[Remix_Solidity](Images/Remix_solidity.jpg)
+![Remix_Solidity](Images/Remix_solidity.jpg)
 
 
 
