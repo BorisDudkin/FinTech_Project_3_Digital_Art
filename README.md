@@ -49,11 +49,11 @@ Python libraries:
 
 5. `web3` is a Python library for interacting with Ethereum
 
-    - [web3](https://pypi.org/project/web3/) - to read about available functions and installation.<br/>
+   - [web3](https://pypi.org/project/web3/) - to read about available functions and installation.<br/>
     
 6. `attributedict` is library that allows you to access dictionary keys as if they were object attributes. 
 
-   -[attributedict](https://pypi.org/project/attributedict/) - to read about available functions and installation.<br/>
+   - [attributedict](https://pypi.org/project/attributedict/) - to read about available functions and installation.<br/>
 
 7. `requests` with the requests library, you can easily send HTTP requests to web servers and APIs. 
 
@@ -71,7 +71,9 @@ Python libraries:
 
    - [pathlib](https://docs.python.org/3/library/pathlib.html) - to read about available functions and installation.<br/>
 
-* The requests, JSON, math and pathlib libraries come installed with Anaconda. To verify, in Terminal type:
+---
+
+The requests, JSON, math and pathlib libraries come installed with Anaconda. To verify, in Terminal type:
 
 ```python
 conda list | grep -E 'requests|json|math|pathlib'
@@ -90,7 +92,7 @@ streamlit run app.py
 
 Install each of the below libraries:<br/>
 
-1. To install pandas run:
+To install pandas run:
 
 ```python
 pip install pandas
@@ -100,7 +102,7 @@ pip install pandas
 conda install pandas
 ```
 
-2. To install Streamlit, in Terminal run:
+To install Streamlit, in Terminal run:
 
 ```python
 pip install streamlit
@@ -111,7 +113,7 @@ Confirm the installation of the Streamlit package by running the following comma
  conda list streamlit
 ```
 
-3. To install Streamlit Lottie in Terminal run:
+To install Streamlit Lottie in Terminal run:
 
 ```python
 pip install streamlit-lottie
@@ -122,7 +124,7 @@ Confirm the installation of the Streamlit-lottie package by running the followin
  conda list streamlit-lottie
 ```
 
-4. To install dotenv in Terminal run:
+To install dotenv in Terminal run:
 
 ```python
 pip install python-dotenv
@@ -133,7 +135,7 @@ Confirm the installation of the dotenv package by running the following commands
  conda list python-dotenv
 ```
 
-5. To install web3 in Terminal run:
+To install web3 in Terminal run:
 
 ```python
 pip install web3
@@ -144,7 +146,7 @@ Confirm the installation of the web3 package by running the following commands i
  conda list web3
 ```
 
-6. To install attributedict in Terminal run:
+To install attributedict in Terminal run:
 
 ```python
 pip install attributedict
