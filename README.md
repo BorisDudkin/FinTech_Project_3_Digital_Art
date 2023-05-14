@@ -70,8 +70,6 @@ Python libraries:
 
 ---
 
-
-
 ## Installation Guide
 
 The application can be started from the terminal using Streamlit, once in the directory of the application and all the required libraries and the application are installed.  (see instructions below):<br/>
@@ -137,36 +135,34 @@ conda install -c anaconda requests
 conda install -c jmcmurray json
 ```
 
-Once all the libraries are installed please Install following software program:
+### Software Installation
+Once all the libraries are installed please Install following software:
 
 * Ganache:
-Ganache is a program that allows you to quickly set up a local blockchain, which you can use to test and develop smart contracts.
+Ganache is a program that allows you to set up a local blockchain, which you can be used to test and develop smart contracts.
 - download the latest version of Ganache and then create a Ganache workspace throught this link [Ganache download page](https://trufflesuite.com/ganache/)
 - Once installed please open Ganache and create a workspace by clicking Quickstart Ethereum. 
 ![Ganache_Quickstart](Images/Ganache_quickstart.jpg)
+- Open Sample.env file in the cloned folder and use the RPC SERVER address from Ganache as input for the WEB3_PROVIDER_URI address in the Sample.env file and save Sample.env file. 
 
+### Web Services
 
 * Remix IDE
-Remix IDE is used to build and test smart contracts createe with Solidity. For this project you can use the web version of [REMIX IDE](https://remix.ethereum.org/)
+Remix IDE is used to build and test smart contracts created in Solidity. For this project the web version of [REMIX IDE](https://remix.ethereum.org/) can be used
 - Open Remix IDE by clicking the link
 - Select solidity in the featured plugins area
 ![Remix_Solidity](Images/Remix_solidity.jpg)
 
-
-
-
-
-
 * Pinata
 Storing data on a chain is expensive. IPFS is a technology that can be used to store and retrieve files from a decentralized system. IPFS distributes each file across multiple nodes in its own network. It breaks down the file into pieces of data and then distributes the pieces across multiple nodes. Smart contracts and dApps can store and retrieve their files directly from the nodes that have the data pieces. This means that they store and access their data by using a decentralized technology—without the expense of storing that data on the chain.
-For our dApp We utilized IPFS services through Pinata. 
+For this dApp Pinata is utilized for IPFS services. 
 
 - Go to Pinata website [Pinata Website](https://www.pinata.cloud/)
 - Sign up for a free account.
 - Log into the pinata dashboard. 
 - Select API keys 
 ![Pinata_API](Images/Pinata_API.jpg)
-- Open Sample.env file in the cloned folder and input the Pinata API KEY and SECRET API KEY in the file and save the file. 
+- Open Sample.env file in the cloned folder and input the Pinata API KEY and SECRET API KEY in the file and save Sample.env file. 
 
 
 
