@@ -53,19 +53,19 @@ Python libraries:
     
 6. `attributedict` is library that allows you to access dictionary keys as if they were object attributes. 
 
-    -[attributedict](https://pypi.org/project/attributedict/) - to read about available functions and installation.<br/>
+   -[attributedict](https://pypi.org/project/attributedict/) - to read about available functions and installation.<br/>
 
 7. `requests` with the requests library, you can easily send HTTP requests to web servers and APIs. 
 
-   -[requests](https://pypi.org/project/requests/) - to read about available functions and installation.<br/>
+   - [requests](https://pypi.org/project/requests/) - to read about available functions and installation.<br/>
 
 8. `JSON` the json library is used to encode and decode data in JSON (JavaScript Object Notation) format. 
 
-   -[JSON](https://docs.python.org/3/library/json.html) - to read about available functions and installation.<br/>
+   - [JSON](https://docs.python.org/3/library/json.html) - to read about available functions and installation.<br/>
 
 9. `math` library provides access to the mathematical functions defined by the C standard.
 
-    - [math](https://docs.python.org/3/library/math.html) - to read about available functions and installation.<br/>
+   - [math](https://docs.python.org/3/library/math.html) - to read about available functions and installation.<br/>
 
 10. `pathlib` This module offers classes representing filesystem paths with semantics appropriate for different operating systems.
 
