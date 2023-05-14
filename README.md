@@ -140,16 +140,16 @@ Once all the libraries are installed please Install following software:
 
 #### Ganache
 Ganache is a program that allows you to set up a local blockchain, which you can be used to test and develop smart contracts.
-1. download the latest version of Ganache and then create a Ganache workspace throught this link [Ganache download page](https://trufflesuite.com/ganache/)
-2.  Once installed please open Ganache and create a workspace by clicking Quickstart Ethereum. 
+1. Eownload the latest version of Ganache and then create a Ganache workspace throught this link [Ganache download page](https://trufflesuite.com/ganache/)
+2. Once installed please open Ganache and create a workspace by clicking Quickstart Ethereum. 
 ![Ganache_Quickstart](Images/Ganache_quickstart.jpg)
 3. Open Sample.env file in the cloned folder and use the RPC SERVER address from Ganache as input for the WEB3_PROVIDER_URI address in the Sample.env file and save Sample.env file. 
 
 ### Web Services
 
 #### Remix IDE
-Remix IDE is used to build and test smart contracts created in Solidity. For this project the web version of [REMIX IDE](https://remix.ethereum.org/) can be used
-1. Open Remix IDE by clicking the link
+Remix IDE is used to build and test smart contracts created in Solidity. For this project the web version of Remix IDE can be used
+1. Open Remix IDE by clicking the following link [REMIX IDE](https://remix.ethereum.org/)
 2. Select solidity in the featured plugins area
 ![Remix_Solidity](Images/Remix_solidity.jpg)
 
@@ -159,10 +159,14 @@ For this dApp Pinata is utilized for IPFS services.
 
 1. Go to Pinata website [Pinata Website](https://www.pinata.cloud/)
 2. Sign up for a free account.
-3. Log into the pinata dashboard. 
-4. Select API keys 
-![Pinata_API](Images/Pinata_API.jpg)
-5. Open Sample.env file in the cloned folder and input the Pinata API KEY and SECRET API KEY in the file and save Sample.env file. 
+3. Log into the pinata and proceed to the dashboard. 
+4. In the developers section please select API keys or access through the following link [Pinata API Keys](https://app.pinata.cloud/developers/api-keys)
+5. Please click on + New Key
+6. Make sure to click the option to grant Admin privileges for your keys.
+7. Please insert a Key Name
+8. Click Create Key button
+![Pinata_API_Keys](Images/Pinata_API.jpg)
+9. Open Sample.env file in the cloned folder and copy the Pinata API KEY and SECRET KEY in the Sample.env file and save Sample.env file. 
 
 
 
