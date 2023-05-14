@@ -172,9 +172,17 @@ Once all the libraries are installed please Install following software:
 Ganache is a program that allows you to set up a local blockchain, which you can be used to test and develop smart contracts.
 1. Download the latest version of Ganache and then create a Ganache workspace throught this link [Ganache download page](https://trufflesuite.com/ganache/)
 2. Once installed please open Ganache and create a workspace by clicking Quickstart Ethereum. 
+
+   <img src="./Images/Ganache_quickstart.jpg" width=1100 height=600>
+
 3. Open **Sample.env** file in the cloned folder and use the **RPC SERVER** address from Ganache as input for the **WEB3_PROVIDER_URI** address in the Sample.env file and save Sample.env file. 
 
-<img src="./Images/Ganache_quickstart.jpg" width=1100 height=600>
+
+
+   <img src="./Images/Ganache_Sample_File_update.jpg" width=500 height=200>
+
+* PLEASE NOTE THAT THE RPC SERVER ADDRESS CAN DIFFER FROM THIS EXAMPLE
+
 
 ### **Web Services**
 
@@ -183,7 +191,7 @@ Remix IDE is used to build and test smart contracts created in Solidity. For thi
 1. Open Remix IDE by clicking the following link [REMIX IDE](https://remix.ethereum.org/)
 2. Select solidity in the featured plugins area
 
-<img src="./Images/Remix_solidity.jpg" width=1100 height=600>
+   <img src="./Images/Remix_solidity.jpg" width=1100 height=600>
 
 #### **Pinata**
 Storing data on a chain is expensive. IPFS is a technology that can be used to store and retrieve files from a decentralized system. IPFS distributes each file across multiple nodes in its own network. It breaks down the file into pieces of data and then distributes the pieces across multiple nodes. Smart contracts and dApps can store and retrieve their files directly from the nodes that have the data pieces. This means that they store and access their data by using a decentralized technology—without the expense of storing that data on the chain.
@@ -199,11 +207,14 @@ For this dApp Pinata is utilized for IPFS services.
 8. Click Create Key button
 9. Open **Sample.env** file in the cloned folder and copy the Pinata **API KEY** and **SECRET KEY** into the Sample.env file and save Sample.env file. 
 
-<img src="./Images/Pinata_API.jpg" width=750 height=650>
+   <img src="./Images/Pinata_API.jpg" width=750 height=650>
+
+   <img src="./Images/Pinata_API_key.jpg" width=500 height=250>
+   <img src="./Images/Pinata_Secret_key.jpg" width=500 height=250>
 
 ---
 
-## Usage
+### Environment Setup
 
 After the installation of all required libraries, software, established access to both web services and updated the **PINATA_API_KEY**, **PINATA_SECRET_API_KEY** with the API information from Pinata and the **WEB3_PROVIDER_URI** with the RPC Server information from GANACHE in the Sample.env file you are ready setup the environment to run the streamlit app.py application.
 
@@ -214,7 +225,7 @@ Create a new Ganache workspace
 * click Quickstart Ethereum, or if already in a started session click switch button this will bring you back to the starting screen. (Please also see video below)
 * Please make sure that the RPC Server Address is the same as the WEB3_PROVIDER_URI in the Sample.env file
 
-<img src="./Images/Step1_Ganache_new_Workspace.gif" width=750 height=550>
+   <img src="./Images/Step1_Ganache_new_Workspace.gif" width=750 height=550>
 
 #### Step 2: Remix IDE Setup
 * Start Remix IDE [REMIX IDE](https://remix.ethereum.org/)
@@ -224,7 +235,7 @@ Create a new Ganache workspace
 * Select contracts folder within the project folder
 * Auction_deployer.sol and NFTRegister_2.sol are now availabele within Remix IDE
 
-<img src="./Images/Step2_Remix_IDE_Setup.gif" width=750 height=550>
+   <img src="./Images/Step2_Remix_IDE_Setup.gif" width=750 height=550>
 
 #### Step 3: Compile and Deploy AuctionDeployer Smart Contract in Remix IDE
 * Select Auction_deployer.sol contract (by clicking on the contract a new tab will open in remix displaying to solidity code)
@@ -237,7 +248,7 @@ Create a new Ganache workspace
 * Select AuctionDeployer in CONTRACT (compile by Remix) selectbox
 * Select Deploy -- Auction Deployer Contract should appear in Deployed Contracts Section
 
-<img src="./Images/Step3_Compile_and_Deploy_AuctionDeployer_Smart_Contract.gif" width=750 height=550>
+   <img src="./Images/Step3_Compile_and_Deploy_AuctionDeployer_Smart_Contract.gif" width=750 height=550>
 
 #### Step 4: Deploy Auction Contract and NFT Register Contract (from auction deployer contract)
 * In Auction Deployer contract click button Auction_address
@@ -251,8 +262,34 @@ Create a new Ganache workspace
 * Click "At Address" Button
 * Both Contracts should now be availabe in the Deployed Contracts Section. 
 
-<img src="./Images/Step4_Deploy_Auction_NFTRegistry_Contracts.gif" width=750 height=550>
+   <img src="./Images/Step4_Deploy_Auction_NFTRegistry_Contracts.gif" width=750 height=550>
 
+#### Step 5: Update Sample.env File
+* In the Sample.env file please update the **SMART_CONTRACT_AUCTION** with the Auction contract address
+* In the Sample.env file please update the **SMART_CONTRACT_NFT_REGISTER** with the NFTRegistery contract address
+
+   <img src="./Images/Step5_Update_Sample_with_auction_contract_address.jpg" width=750 height=550>
+   <img src="./Images/Step5_Update_Sample_with_NFTRegistery_contract_address.jpg" width=750 height=550>
+
+* PLEASE NOTE THAT THE CONTRACT ADDRESSES IN THIS EXAMPLE WILL DIFFER FROM NEWLY DEPLOYED CONTRACTS
+
+* Once all API keys and addresses are correctly updated in the Sample.env file, please save the Sample.env file as **.env**
+
+
+## Usage
+
+#### Start Streamlit app from Terminal
+* From your terminal go to the project folder and type:
+
+```python
+streamlit run app.py
+```
+> Application summary<br/>
+
+* Home: 
+   - Home Section provides information about the project and the project's objective.
+
+   <img src="./Images/Home_Page.jpg" width=850 height=550>
 
 
 
