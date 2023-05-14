@@ -39,35 +39,44 @@ Python libraries:
 
    - [Streamlit](https://streamlit.io/) - to read more about deploying, installing and customizing.<br/>
 
-3. 2. `Streamlit-lottie` A Streamlit custom component to load Lottie animations
+3. `Streamlit-lottie` A Streamlit custom component to load Lottie animations
 
    - [Streamlit-lottie](https://pypi.org/project/streamlit-lottie/) - to read more about deploying, installing and customizing.<br/>
 
-3. `NumPy` is an open source library that adds computational tools to a project, including mathematical functions and random number generators.
+4. `dotenv` Python-dotenv reads key-value pairs from a .env file and can set them as environment variables. 
 
-   - [Numpy](https://numpy.org/) - to read about available functions and installation.<br/>
+   - [dotenv](https://pypi.org/project/python-dotenv/) - to read about available functions and installation.<br/>
 
-4. `web3` is a Python library for interacting with Ethereum
+5. `web3` is a Python library for interacting with Ethereum
 
     - [web3](https://pypi.org/project/web3/) - to read about available functions and installation.<br/>
     
-5. `math` library provides access to the mathematical functions defined by the C standard.
-
-    - [math](https://docs.python.org/3/library/math.html) - to read about available functions and installation.<br/>
-
 6. `attributedict` is library that allows you to access dictionary keys as if they were object attributes. 
 
     -[attributedict](https://pypi.org/project/attributedict/) - to read about available functions and installation.<br/>
 
+7. `requests` with the requests library, you can easily send HTTP requests to web servers and APIs. 
 
-6. Python modules and libraries to interface with websites and smart contracts:
+   -[requests](https://pypi.org/project/requests/) - to read about available functions and installation.<br/>
 
-- Requests: With the requests library, you can easily send HTTP requests to web servers and APIs. 
+8. `JSON` the json library is used to encode and decode data in JSON (JavaScript Object Notation) format. 
 
-- JSON: JSON is used to specify the interface for smart contracts. This interface is defined using the Application Binary Interface (ABI) format, which is a standardized way of defining the methods and data types that a smart contract exposes to other contracts or external clients.
+   -[JSON](https://docs.python.org/3/library/json.html) - to read about available functions and installation.<br/>
 
-  The Requests and JSON libraries get installed with Anaconda. To verify, in Terminal type:
+9. `math` library provides access to the mathematical functions defined by the C standard.
 
+    - [math](https://docs.python.org/3/library/math.html) - to read about available functions and installation.<br/>
+
+10. `pathlib` This module offers classes representing filesystem paths with semantics appropriate for different operating systems.
+
+   - [pathlib](https://docs.python.org/3/library/pathlib.html) - to read about available functions and installation.<br/>
+
+* The requests, JSON, math and pathlib libraries come installed with Anaconda. To verify, in Terminal type:
+
+```python
+conda list | grep -E 'requests|json|math|pathlib'
+
+```
 ---
 
 ## Installation Guide
@@ -77,62 +86,83 @@ The application can be started from the terminal using Streamlit, once in the di
 ```python
 streamlit run app.py
 ```
-
-
 ### Library Installations
 
 Install each of the below libraries:<br/>
 
-To install pandas run:
+1. To install pandas run:
 
 ```python
 pip install pandas
 ```
-
 ```python
 # or conda
 conda install pandas
 ```
-To install Streamlit, in Terminal run:
+
+2. To install Streamlit, in Terminal run:
 
 ```python
 pip install streamlit
 ```
-
 Confirm the installation of the Streamlit package by running the following commands in Terminal:
 
 ```python
  conda list streamlit
 ```
 
-To install Streamlit Lottie in Terminal run:
+3. To install Streamlit Lottie in Terminal run:
 
 ```python
 pip install streamlit-lottie
 ```
-
 Confirm the installation of the Streamlit-lottie package by running the following commands in Terminal:
 
 ```python
  conda list streamlit-lottie
 ```
-To install AttributeDict in Terminal run:
+
+4. To install dotenv in Terminal run:
+
+```python
+pip install python-dotenv
+```
+Confirm the installation of the dotenv package by running the following commands in Terminal:
+
+```python
+ conda list python-dotenv
+```
+
+5. To install web3 in Terminal run:
+
+```python
+pip install web3
+```
+Confirm the installation of the web3 package by running the following commands in Terminal:
+
+```python
+ conda list web3
+```
+
+6. To install attributedict in Terminal run:
 
 ```python
 pip install attributedict
 ```
-Confirm the installation of the AttributeDict package by running the following commands in Terminal:
+Confirm the installation of the math package by running the following commands in Terminal:
 
 ```python
  conda list attributedict
 ```
 
-
-If Requests and JSON libraries are missing, in Terminal run:
+If Requests, JSON math or Pathlib libraries are missing, in Terminal run:
 
 ```python
 conda install -c anaconda requests
 conda install -c jmcmurray json
+conda install math
+conda install pathlib
+
 ```
 
 ### Software Installation
