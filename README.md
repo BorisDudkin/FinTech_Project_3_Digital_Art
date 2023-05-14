@@ -69,7 +69,7 @@ Python libraries:
 
 10. `pathlib` This module offers classes representing filesystem paths with semantics appropriate for different operating systems.
 
-   - [pathlib](https://docs.python.org/3/library/pathlib.html) - to read about available functions and installation.<br/>
+      - [pathlib](https://docs.python.org/3/library/pathlib.html) - to read about available functions and installation.<br/>
 
 ---
 
@@ -77,7 +77,6 @@ The requests, JSON, math and pathlib libraries come installed with Anaconda. To 
 
 ```python
 conda list | grep -E 'requests|json|math|pathlib'
-
 ```
 ---
 
@@ -90,16 +89,16 @@ streamlit run app.py
 ```
 ### Library Installations
 
-Install each of the below libraries:<br/>
+Install each of the following libraries (if not installed already):<br/>
 
 To install pandas run:
 
 ```python
 pip install pandas
 ```
+Confirm the installation of pandas package by running the following commands in Terminal:
 ```python
-# or conda
-conda install pandas
+conda list pandas
 ```
 
 To install Streamlit, in Terminal run:
@@ -157,35 +156,36 @@ Confirm the installation of the math package by running the following commands i
  conda list attributedict
 ```
 
-If Requests, JSON math or Pathlib libraries are missing, in Terminal run:
+If Requests, JSON, math or Pathlib libraries are missing, in Terminal run:
 
 ```python
 conda install -c anaconda requests
 conda install -c jmcmurray json
 conda install math
 conda install pathlib
-
 ```
 
 ### Software Installation
 Once all the libraries are installed please Install following software:
 
-#### Ganache
+#### **Ganache**
 Ganache is a program that allows you to set up a local blockchain, which you can be used to test and develop smart contracts.
-1. Eownload the latest version of Ganache and then create a Ganache workspace throught this link [Ganache download page](https://trufflesuite.com/ganache/)
+1. Download the latest version of Ganache and then create a Ganache workspace throught this link [Ganache download page](https://trufflesuite.com/ganache/)
 2. Once installed please open Ganache and create a workspace by clicking Quickstart Ethereum. 
-![Ganache_Quickstart](Images/Ganache_quickstart.jpg)
-3. Open Sample.env file in the cloned folder and use the RPC SERVER address from Ganache as input for the WEB3_PROVIDER_URI address in the Sample.env file and save Sample.env file. 
+3. Open **Sample.env** file in the cloned folder and use the **RPC SERVER** address from Ganache as input for the **WEB3_PROVIDER_URI** address in the Sample.env file and save Sample.env file. 
 
-### Web Services
+<img src="./Images/Ganache_quickstart.jpg" width=1100 height=600>
 
-#### Remix IDE
-Remix IDE is used to build and test smart contracts created in Solidity. For this project the web version of Remix IDE can be used
+### **Web Services**
+
+#### **Remix IDE**
+Remix IDE is used to build and test smart contracts created in Solidity. For this project the web version of Remix IDE can be used. 
 1. Open Remix IDE by clicking the following link [REMIX IDE](https://remix.ethereum.org/)
 2. Select solidity in the featured plugins area
-![Remix_Solidity](Images/Remix_solidity.jpg)
 
-#### Pinata
+<img src="./Images/Remix_solidity.jpg" width=1100 height=600>
+
+#### **Pinata**
 Storing data on a chain is expensive. IPFS is a technology that can be used to store and retrieve files from a decentralized system. IPFS distributes each file across multiple nodes in its own network. It breaks down the file into pieces of data and then distributes the pieces across multiple nodes. Smart contracts and dApps can store and retrieve their files directly from the nodes that have the data pieces. This means that they store and access their data by using a decentralized technology—without the expense of storing that data on the chain.
 For this dApp Pinata is utilized for IPFS services. 
 
@@ -197,14 +197,68 @@ For this dApp Pinata is utilized for IPFS services.
 6. Make sure to click the option to grant Admin privileges for your keys.
 7. Please insert a Key Name
 8. Click Create Key button
-![Pinata_API_Keys](Images/Pinata_API.jpg)
-9. Open Sample.env file in the cloned folder and copy the Pinata API KEY and SECRET KEY in the Sample.env file and save Sample.env file. 
+9. Open **Sample.env** file in the cloned folder and copy the Pinata **API KEY** and **SECRET KEY** into the Sample.env file and save Sample.env file. 
+
+<img src="./Images/Pinata_API.jpg" width=750 height=650>
+
+---
+
+## Usage
+
+After the installation of all required libraries, software, established access to both web services and updated the **PINATA_API_KEY**, **PINATA_SECRET_API_KEY** with the API information from Pinata and the **WEB3_PROVIDER_URI** with the RPC Server information from GANACHE in the Sample.env file you are ready setup the environment to run the streamlit app.py application.
+
+Please follow the following steps in the exact sequence described below:
+
+#### Step 1: Ganache
+Create a new Ganache workspace
+* click Quickstart Ethereum, or if already in a started session click switch button this will bring you back to the starting screen. (Please also see video below)
+* Please make sure that the RPC Server Address is the same as the WEB3_PROVIDER_URI in the Sample.env file
+
+<img src="./Images/Step1_Ganache_new_Workspace.gif" width=750 height=550>
+
+#### Step 2: Remix IDE Setup
+* Start Remix IDE [REMIX IDE](https://remix.ethereum.org/)
+* Select File Explorer
+* Create new WorkSpaces and Provide Workspace Name
+* Select Upload Folder
+* Select contracts folder within the project folder
+* Auction_deployer.sol and NFTRegister_2.sol are now availabele within Remix IDE
+
+<img src="./Images/Step2_Remix_IDE_Setup.gif" width=750 height=550>
+
+#### Step 3: Compile and Deploy AuctionDeployer Smart Contract in Remix IDE
+* Select Auction_deployer.sol contract (by clicking on the contract a new tab will open in remix displaying to solidity code)
+* Select Solidity Compiler Icon (Left sidebar)
+* Select Pragma Solidity Compiler in COMPILER selextbox (In this project you can use the 0.8.6 and up)
+* Select Compile Auction_Deployer.sol (Please wait until check mark appears)
+* Select Deploy and Run Transactions icon (left sidebar)
+* Select Dev - Ganache Provider in ENVIRONMENT selectbox
+* In the Pop-up please provide the correct RPC Server Address
+* Select AuctionDeployer in CONTRACT (compile by Remix) selectbox
+* Select Deploy -- Auction Deployer Contract should appear in Deployed Contracts Section
+
+<img src="./Images/Step3_Compile_and_Deploy_AuctionDeployer_Smart_Contract.gif" width=750 height=550>
+
+#### Step 4: Deploy Auction Contract and NFT Register Contract (from auction deployer contract)
+* In Auction Deployer contract click button Auction_address
+* Copy auction address by couble clicking on the address, use right mouse click and copy address.
+* Select Auction contract in CONTRACT (compile by Remix) selectbox
+* Paste auction address in "At Address" text box and 
+* Click "At Address" Button
+* Copy NFTRegistry address by couble clicking on the address, use right mouse click and copy address.
+* Select NFTRegistry contract in CONTRACT (compile by Remix) selectbox
+* Paste NFTRegistry address in "At Address" text box and 
+* Click "At Address" Button
+* Both Contracts should now be availabe in the Deployed Contracts Section. 
+
+<img src="./Images/Step4_Deploy_Auction_NFTRegistry_Contracts.gif" width=750 height=550>
 
 
 
 
 
-Copy the provided SAMPLE.env file to a new file named .env, and then add the missing data to the environment variables.
+
+
 
 ## Contributors
 
