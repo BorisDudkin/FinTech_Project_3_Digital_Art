@@ -74,7 +74,7 @@ if selected == '🏠 Home':
 
     st.subheader('Minting and Registration')
 
-    mining = "A simple user friendly interface of the applcation allows a user to first mint and register his/her art piece. Once the NFT is minted and registered, we utilize Pinata services to store the newly created contracts in a decentralized manner."
+    mining = "A simple user friendly interface of the applcation allows a user to first mint and register his/her art piece. Once the NFT is minted and registered, we utilize Pinata services to store artwork files and metadata for the artwork files.."
     st.write(mining)
     st.write("---")
 
