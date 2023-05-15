@@ -237,7 +237,7 @@ Create a new Ganache workspace
 * Select contracts folder within the project folder
 * Auction_deployer.sol and NFTRegister_2.sol are now availabele within Remix IDE
 
-   <img src="./Images/9_Step2_Remix_IDE_Setup.gif" width=750 height=550>
+   <img src="./Images/9_Step2_Remix_IDE_setup.gif" width=750 height=550>
 
 #### Step 3: Compile and Deploy AuctionDeployer Smart Contract in Remix IDE
 * Select Auction_deployer.sol contract (by clicking on the contract a new tab will open in remix displaying to solidity code)
