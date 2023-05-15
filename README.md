@@ -293,6 +293,25 @@ streamlit run app.py
 
 
 
+* Minting and Registration
+   - 
+   <img src="./Images/Minting_Registration_toAuction.gif" width=750 height=550>
+
+   <img src="./Images/TokenURI_IPFS_Pinata.jpg" width=850 height=550>
+
+   <img src="./Images/NFTRegistry_Contract_After_Auction.jpg" width=850 height=550>
+
+
+
+* Auction
+
+   <img src="./Images/During_Auction.gif" width=750 height=550>
+
+   <img src="./Images/After_Auction.gif" width=750 height=550>
+
+   <img src="./Images/Ganache_after_auction.jpg" width=850 height=550>
+
+   <img src="./Images/Remix_Auction_Contract_After_Auction.jpg" width=850 height=550>
 
 
 
