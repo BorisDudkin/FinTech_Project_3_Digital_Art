@@ -3,18 +3,6 @@
 pragma solidity ^0.8.4;
 
 import "./NFTRegister_2.sol";
-// import "github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/math/SafeMath.sol";
-
-//ensure we have thoe two functions available in our contract
-// the functions are inherent to ERC721 tokens
-// interface IERC721 {
-//     function transfer(address, uint) external;
-//     function transferFrom(
-//         address,
-//         address,
-//         uint
-//     ) external;
-// }
 
 contract Auction {
 
@@ -90,10 +78,8 @@ contract Auction {
         emit Start();
     }
     
-    //bidding during the auction:
-    function bid() external payable {
-        // make sure the auction is not finalized before the agreed time:
-        require(block.timestamp < endAt, "Auction ended");
+    //bidding during the auction only:
+    function bid() external payable inProgress {
         // the bid has to be higher than the latest bid:
         require(msg.value < msg.sender.balance, "Insufficient bidder balance for placed bid");
         // seller cannot be a bidder to prevent price manipulation
@@ -107,9 +93,10 @@ contract Auction {
             highestBidder = msg.sender;
         }
         // emitting Bid event:
-        emit Bid(highestBidder, highestBid);
+        emit Bid(msg.sender, msg.value);
     }
 
+    // withdrawls are not limited to the time of the auction and can be executed also after the auction ends
     function withdraw() external payable {
         require(msg.sender != highestBidder, "highest bidder cannot withdraw");
         // get the balance of the bidder within the contract

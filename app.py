@@ -306,7 +306,7 @@ if selected == '💰 Auction':
         # present artwork on auction
         image_link = "https://gateway.pinata.cloud/ipfs/"+art['image']
         # create timer of auction
-        time_auction = 125 
+        time_auction = 130
         # create a timeframe to withdraw 
         time_withdraw = time_auction + 45
         time_sec = time_withdraw
