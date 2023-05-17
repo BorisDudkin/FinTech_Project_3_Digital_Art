@@ -351,7 +351,7 @@ Additionally to avoid expensive storage cost on the Etherium blockchain we utili
   - After the auction finishes the application offers an additional time period in which bidders that did not have the highest bid can withdraw their bids and funds are transferred back to the bidder.
   - During withdrawal period the application does not allow for any new bids.
 
-  **Please see video below for the full demonstation of the Auction process.**
+  **Please see video below for the full demonstation of the withdrawal process after auction ended.**
 
    <img src="./Images/18_Withdrawal_period.gif" width=750 height=550>
 
